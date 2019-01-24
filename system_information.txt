@@ -1,0 +1,21 @@
+User information            : harsimransingh
+Host name                   : harsimransingh-Inspiron-13-7378
+Type of Operating system    : GNU/Linux
+OS Distribution             : Distributor ID:	Ubuntu
+version of kernel           : 4.15.0-43-generic
+Kernel gcc version build    : Linux version 4.15.0-43-generic (buildd@lcy01-amd64-007) (gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.10)) #46~16.04.1-Ubuntu SMP Fri Dec 7 13:31:08 UTC 2018
+Kernel build time           : #46~16.04.1-Ubuntu SMP Fri Dec 7 13:31:08 UTC 2018
+System architecture info    : x86_64
+Disk Space Utilization:     : Filesystem      Size  Used Avail Use% Mounted on
+udev            7.8G     0  7.8G   0% /dev
+tmpfs           1.6G   26M  1.6G   2% /run
+/dev/sda7        12G  7.3G  3.3G  69% /
+tmpfs           7.8G  179M  7.6G   3% /dev/shm
+tmpfs           5.0M  4.0K  5.0M   1% /run/lock
+tmpfs           7.8G     0  7.8G   0% /sys/fs/cgroup
+/dev/sda1       496M   66M  431M  14% /boot/efi
+tmpfs           1.6G   76K  1.6G   1% /run/user/1000
+File system memory          :              
+              total        used        free      shared  buff/cache   available
+Mem:          15910        2458       11185         701        2266       12393
+Swap:         16253           0       16253
