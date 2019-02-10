@@ -1,3 +1,14 @@
+
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : main_sort.c
+* Creation Date : 9-02-2019
+* Last Modified : Fri 9 Feb 2019 00:00:56 PM MDT
+* Created By : Harsimransingh
+* Description: Source file for harry_sort functions system call
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+
+
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/sched.h>
@@ -7,7 +18,6 @@
 
 
 #include <stdint.h>
-
 
 static void merge_elements(int32_t arr[], int32_t left, int32_t middle, int32_t right)
 {
@@ -75,19 +85,19 @@ static void merge_sort(int32_t arr[], int32_t left, int32_t right)
   }
 }
 
+
+
+/*user defined system call to sort an array*/
 SYSCALL_DEFINE3(harry_sort, int32_t __user*, src_ptr, int, sort_length, int32_t __user*, dest_ptr)
 {
- int32_t temp;
- int i,j;
  int32_t *buff = NULL;
- printk(KERN_INFO "Syscall for sorting an array from largest to smallest \n");
+ printk(KERN_INFO "ENTERED SYSCALL SUCCESSFULLY!!!!!!! \n");
  buff = (int32_t*)kmalloc(sizeof(int32_t)*sort_length, GFP_KERNEL);
- if(!buff)
+ if(buff == NULL)
  {
 	printk(KERN_ALERT "Malloc failed.\n");
 	return -ENOMEM;
  } 
- 
  
   if (src_ptr == NULL || dest_ptr == NULL)
   {
@@ -104,37 +114,17 @@ SYSCALL_DEFINE3(harry_sort, int32_t __user*, src_ptr, int, sort_length, int32_t 
         return -EINVAL;
     }
     
-    /* copy buff_ptr, which is in the user’s address space, into buff */
-    if (copy_from_user(buff, src_ptr, (sizeof(int32_t)*sort_length)))
+    if (copy_from_user(buff, src_ptr, (sizeof(int32_t)*sort_length)))  //copy from user space to kernal space
     {
         kfree(buff);
         return -EFAULT;
     }
-    
-    merge_sort(buff,0,sort_length-1);	
-
-/*    for (i=0;i<sort_length;i++)
-  {
-      for(j=i+1; j<sort_length; j++)
-      {
-          if (*(buff+i)<*(buff+j))
-          {
-              temp = *(buff+i);
-              *(buff+i) = *(buff+j);
-              *(buff+j) = temp;
-          }
-      }
-  }
-  */
+   
+    merge_sort(buff,0,sort_length-1);  //sorting function
     printk("\n");
-/*
-  for (i=0; i<sort_length; i++)
-  {
-      printk(KERN_INFO "%i",*(buff+i));
-  }
-*/  
-    /* copy buff into sort_buff, which is in the user’s address space */
-    if (copy_to_user(dest_ptr, buff, (sizeof(int32_t)*sort_length)))
+
+    
+    if (copy_to_user(dest_ptr, buff, (sizeof(int32_t)*sort_length)))  //copy from kernel space to user space
     {
         kfree(buff);
         return -EFAULT;
@@ -144,3 +134,5 @@ SYSCALL_DEFINE3(harry_sort, int32_t __user*, src_ptr, int, sort_length, int32_t 
   kfree(buff);
 return 0;
 }
+
+
