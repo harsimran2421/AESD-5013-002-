@@ -21,6 +21,8 @@ int main()
   int i = 0;
   time_t t;
   int32_t src_arr[256], dest_arr[256];
+  int32_t *src_str = src_arr;
+  int32_t *sort_list = dest_arr;
   printf("harry_sort syscall is action\n");
   srand((unsigned) time(&t));
   for( i = 0 ; i <256 ; i++ ) {
@@ -29,20 +31,19 @@ int main()
   for( i = 0 ; i <256 ; i++ ) {
      printf("%c", src_arr[i]);
   }
-  printf("/n");
-  int32_t *src_str = src_arr;
-  int32_t *sort_list = dest_arr;
-
-  int ret = syscall(398, src_str, 256, sort_list);
-
+  printf("\n");
+  int return_val = syscall(398, src_str, 256, sort_list);
   printf("\n");
   if (ret == 0)
 	{
 		printf("\nAnd its a success!!!!!\n");
 	}
-	else	printf("\nFailed better luck next time\n");
-
-  for( i = 0 ; i <256 ; i++ ) {
+	else
+  {
+    printf("\nFailed better luck next time\n");
+  }
+  for( i = 0 ; i <256 ; i++ )
+  {
      printf("%c", *(sort_list+i));
   }
 printf("\n");  
