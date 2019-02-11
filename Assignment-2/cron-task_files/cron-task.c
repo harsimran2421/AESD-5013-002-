@@ -31,6 +31,12 @@ int main()
   int32_t *src_str = src_arr;
   int32_t *sort_list = dest_arr;
   struct timeval tv;
+ 
+  srand((unsigned) time(&t));
+
+  for( i = 0 ; i <256 ; i++ ) {
+     src_arr[i] = 48 + (rand() % 79);
+  }
   
   /*syscall to get the process ID*/
   long int process_id = getpid();
@@ -47,12 +53,7 @@ int main()
 
   sleep(1);
 
-  srand((unsigned) time(&t));
 
-  for( i = 0 ; i <256 ; i++ ) {
-     src_arr[i] = 48 + (rand() % 79);
-  }
- 
   printf("Input string is:");
   for( i = 0 ; i <256 ; i++ ) {
      printf("%c", src_arr[i]);
