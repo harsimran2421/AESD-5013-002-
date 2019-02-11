@@ -18,21 +18,14 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 int main()
 {
-	
-  int i, n, j;
+  int i = 0;
   time_t t;
   int32_t src_arr[256], dest_arr[256];
-
   printf("harry_sort syscall is action\n");
-
-  /* Intializes random number generator */
   srand((unsigned) time(&t));
-
-  /* Print 5 random numbers from 0 to 49 */
   for( i = 0 ; i <256 ; i++ ) {
      src_arr[i] = 48 + (rand() % 79);
-  }
- 
+  } 
   for( i = 0 ; i <256 ; i++ ) {
      printf("%c", src_arr[i]);
   }
@@ -53,7 +46,6 @@ int main()
      printf("%c", *(sort_list+i));
   }
 printf("\n");  
-
 return 0;
 }
 

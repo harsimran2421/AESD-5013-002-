@@ -1,3 +1,6 @@
+
+
+
 #include <stdio.h>
 #include <linux/kernel.h>
 #include <stdlib.h>
@@ -9,7 +12,7 @@
 
 int main()
 {
-  int i, n, j;
+  int i;
   time_t t;
   int32_t src_arr[256], dest_arr[256];
   int32_t temp;
@@ -17,17 +20,21 @@ int main()
   int32_t *src_str = src_arr;
   int32_t *sort_list = dest_arr;
   struct timeval tv;
+  
+  /*syscall to get the process ID*/
   long int process_id = getpid();
+  
+  /*syscall to get user ID*/
   long int user_id = getuid();
+
 	printf("Current process ID= %ld\n", process_id);
 	printf("Current user ID= %ld\n", user_id);
 
-	//time(&now);
+  /*syscall to get current time*/
   gettimeofday(&tv,NULL);
 	printf("Today is : %s\n", ctime(&tv.tv_sec));
 
   sleep(1);
-  /* Intializes random number generator */
 
   srand((unsigned) time(&t));
 

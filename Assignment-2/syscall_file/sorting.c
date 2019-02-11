@@ -19,6 +19,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 #include <stdint.h>
 
+/*reference geeks for geeks website*/
 static void merge_elements(int32_t arr[], int32_t left, int32_t middle, int32_t right)
 {
   int32_t i, j, k;
@@ -40,7 +41,7 @@ static void merge_elements(int32_t arr[], int32_t left, int32_t middle, int32_t 
   j = 0;
   while(i < val1 && j < val2)
   {
-    if(left_arr[i] <= right_arr[j])
+    if(left_arr[i] > right_arr[j])
     {
       arr[k] = left_arr[i];
       i++;
@@ -68,6 +69,7 @@ static void merge_elements(int32_t arr[], int32_t left, int32_t middle, int32_t 
 
 }
 
+/*reference geeks for geeks website*/
 static void merge_sort(int32_t arr[], int32_t left, int32_t right)
 {
   if(left<right)
@@ -85,12 +87,11 @@ static void merge_sort(int32_t arr[], int32_t left, int32_t right)
   }
 }
 
-
-
 /*user defined system call to sort an array*/
 SYSCALL_DEFINE3(harry_sort, int32_t __user*, src_ptr, int, sort_length, int32_t __user*, dest_ptr)
 {
  int32_t *buff = NULL;
+ int32_t i = 0;
  printk(KERN_INFO "ENTERED SYSCALL SUCCESSFULLY!!!!!!! \n");
  buff = (int32_t*)kmalloc(sizeof(int32_t)*sort_length, GFP_KERNEL);
  if(buff == NULL)
@@ -99,37 +100,41 @@ SYSCALL_DEFINE3(harry_sort, int32_t __user*, src_ptr, int, sort_length, int32_t 
 	return -ENOMEM;
  } 
  
-  if (src_ptr == NULL || dest_ptr == NULL)
+  if (src_ptr == NULL)
   {
        printk(KERN_ERR "Null pointer error \n");
 	     kfree(buff);
        return -EINVAL;
   }
+  else if (dest_ptr == NULL)
+  {
+       printk(KERN_ERR "Null pointer error \n");
+	     kfree(buff);
+       return -EINVAL;
+  }
+  else if(sort_length < 256)
+  {
+    printk(KERN_DEBUG "Buffer size < 255 \n");
+    kfree(buff);
+    return -EINVAL;
+  }
   else
   {
-       if(sort_length < 256)
-    {
-        printk(KERN_DEBUG "Buffer size < 255 \n");
-	      kfree(buff);
-        return -EINVAL;
-    }
-    
+
     if (copy_from_user(buff, src_ptr, (sizeof(int32_t)*sort_length)))  //copy from user space to kernal space
     {
-        kfree(buff);
-        return -EFAULT;
+      kfree(buff);
+      return -EFAULT;
     }
-   
+    printk(KERN_INFO"Starting to sort!\n");   
     merge_sort(buff,0,sort_length-1);  //sorting function
-    printk("\n");
+    printk(KERN_INFO"Done sorting\n");
 
-    
     if (copy_to_user(dest_ptr, buff, (sizeof(int32_t)*sort_length)))  //copy from kernel space to user space
     {
         kfree(buff);
         return -EFAULT;
     }
-    
   }
   kfree(buff);
 return 0;
