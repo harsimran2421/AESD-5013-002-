@@ -1,1 +1,0 @@
-cmd_/home/harsimransingh/HW2/HW3/Question_4/hw3_question_4.ko := arm-linux-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/harsimransingh/HW2/HW3/Question_4/hw3_question_4.ko /home/harsimransingh/HW2/HW3/Question_4/hw3_question_4.o /home/harsimransingh/HW2/HW3/Question_4/hw3_question_4.mod.o ;  true
