@@ -1,0 +1,13 @@
+echo set sysroot /home/harsimransingh/HW2/buildroot/output/staging \n
+echo target extended-remote 10.0.0.185:10001 \n
+echo remote put /home/harsimransingh/HW2/HW3/gdb/hw3_question_2 hw3_question_2 \n 
+echo set remote exec-file hw3_question_2 \n
+file hw3_question_2
+echo b main \n
+echo b 30 \n
+echo start \n
+echo n \n
+echo c \n
+echo n \n
+echo c \n
+echo c \n
