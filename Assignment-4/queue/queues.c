@@ -1,3 +1,16 @@
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : queues.c
+* Creation Date : 25-02-2019
+* Last Modified : Thu 28 Feb 2019 23:30:16 PM MDT
+* Created By : Harsimransingh
+* Description: Source file to implement posix message queues for ipc communication
+* References:
+*           https://gist.github.com/gustavorv86/9e98621b44222114524399a3b4302ddb
+*           http://csweb.cs.wfu.edu/~torgerse/Kokua/More_SGI/007-2478-008/sgi_html/ch06.html
+*           https://stackoverflow.com/questions/3056307/how-do-i-use-mqueue-in-a-c-program-on-a-linux-based-system
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,7 +36,9 @@ mqd_t ser_discriptor, cli_discriptor;
 
 void intHandler(int dummy) {
   FILE *file_ptr=fopen("queues.log","a");
-  fprintf(file_ptr,"CTRL + C SIGNAL CAUGHT!!!!");
+  struct timeval curr_time;
+  gettimeofday(&curr_time, NULL);
+  fprintf(file_ptr,"[Timestamp: %ld us] CTRL + C SIGNAL CAUGHT!!!!",curr_time.tv_usec);
   fclose(file_ptr);
   mq_unlink("/one_queue");
   mq_close(cli_discriptor);

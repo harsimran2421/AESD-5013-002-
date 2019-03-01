@@ -1,3 +1,16 @@
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : main.c
+* Creation Date : 21-02-2019
+* Last Modified : Thu 28 Feb 2019 17:08:06 PM MDT
+* Created By : Harsimransingh
+* Description: Source file to implement 2 threads - 1 for character read and 1 for cpu utilization logging. 
+* Refrences:
+*           https://timmurphy.org/2010/05/04/pthreads-in-c-a-minimal-working-example/
+*           https://www.geeksforgeeks.org/multithreading-c-2/
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+
+
 /*standard libraries*/
 #include <stdio.h>
 #include <stdlib.h>

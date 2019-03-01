@@ -1,3 +1,15 @@
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : main_sort.c
+* Creation Date : 24-02-2019
+* Last Modified : Thu 28 Feb 2019 22:08:56 PM MDT
+* Created By : Harsimransingh
+* Description: Source file to implement pipes for ipc communication 
+* References:
+*           https://www.geeksforgeeks.org/c-program-demonstrate-fork-and-pipe/
+*           
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+
 #include<stdlib.h>
 #include<unistd.h>
 #include<stdio.h>
@@ -22,7 +34,9 @@ int p2c_pipe[2], c2p_pipe[2];
 
 void intHandler(int dummy) {
   FILE *file_ptr=fopen("pipes.log","a");
-  fprintf(file_ptr,"CTRL + C SIGNAL CAUGHT!!!!");
+    struct timeval curr_time;
+  gettimeofday(&curr_time, NULL);
+  fprintf(file_ptr,"[Timestamp: %ld] CTRL + C SIGNAL CAUGHT!!!!", curr_time.tv_usec);
   fclose(file_ptr);
   close(c2p_pipe[1]);
   close(c2p_pipe[0]);

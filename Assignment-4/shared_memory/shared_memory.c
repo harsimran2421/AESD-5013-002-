@@ -1,3 +1,16 @@
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : shared_memory.c
+* Creation Date : 27-02-2019
+* Last Modified : Thu 28 Feb 2019 23:08:56 PM MDT
+* Created By : Harsimransingh
+* Description: Source file to implement shared memory region for ipc communication
+* References:
+*           https://www.geeksforgeeks.org/ipc-shared-memory/
+*           https://stackoverflow.com/questions/5656530/how-to-use-shared-memory-with-linux-in-c
+*
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+
 #include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
@@ -23,7 +36,9 @@ typedef struct{
 
 void intHandler(int dummy) {
   FILE *file_ptr=fopen("shm.log","a");
-  fprintf(file_ptr,"CTRL + C SIGNAL CAUGHT!!!!");
+  struct timeval curr_time;
+  gettimeofday(&curr_time, NULL);
+  fprintf(file_ptr,"[Timestamp: %ld]CTRL + C SIGNAL CAUGHT!!!!",curr_time.tv_usec);
   fclose(file_ptr);
   shm_unlink(SHARED_MEMORY);
   close(shm_discriptor);

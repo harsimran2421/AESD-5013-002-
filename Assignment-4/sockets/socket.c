@@ -1,3 +1,16 @@
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : socket.c
+* Creation Date : 21-02-2019
+* Last Modified : Wed 27 Feb 2019 00:08:56 PM MDT
+* Created By : Harsimransingh
+* Description: Source file to use sockets for IPC communication
+*
+* References:
+*           https://www.geeksforgeeks.org/socket-programming-cc/
+*           https://www.csd.uoc.gr/~hy556/material/tutorials/cs556-3rd-tutorial.pdf
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -13,7 +26,7 @@
 #include <memory.h>
 #include <string.h>
 
-int sock_client;                               //this will be our socket
+int sock_client;                
 int sock;
 typedef struct{
     char string[50];
@@ -21,10 +34,17 @@ typedef struct{
     int led_control;
 }msg_struct; 
 
+#define MAXBUFSIZE 200
+#define SEND_BUFFER_SIZE 512
+#define RECIEVE_BUFFER_SIZE 512
 
-void intHandler(int dummy) {
+
+void intHandler(int dummy) 
+{
+  struct timeval curr_time;
+  gettimeofday(&curr_time, NULL);
   FILE *file_ptr=fopen("socket.log","a");
-  fprintf(file_ptr,"CTRL + C SIGNAL CAUGHT!!!!");
+  fprintf(file_ptr,"[Timestamp: %ld us] CTRL + C SIGNAL CAUGHT!!!!",curr_time.tv_usec);
   fclose(file_ptr);
   close(sock);
   close(sock_client);
@@ -42,10 +62,6 @@ void logging_function(int parent_id, int pthread_id, char *file_name,char *statu
   fclose(file_ptr);
 }
 
-
-#define MAXBUFSIZE 200
-#define SEND_BUFFER_SIZE 512
-#define RECIEVE_BUFFER_SIZE 512
 
 int main (int argc, char * argv[] )
 {
