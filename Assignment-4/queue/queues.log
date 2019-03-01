@@ -44,4 +44,4 @@
  LED control:0
 [Timestamp: 819550 us] Parent ID:30017, Posix thread ID:30018 recieved message from queue 1:From parent to child msg number:9
  LED control:0
-CTRL + C SIGNAL CAUGHT!!!!
+[Timestamp: 819558 us] CTRL + C SIGNAL CAUGHT!!!!

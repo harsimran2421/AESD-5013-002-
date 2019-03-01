@@ -12,4 +12,4 @@
 
 [Timestamp: 549508 us] Parent ID:1482, Posix thread ID:30842Parent Received string: From child to parent msg 2, String length = 26, led on: 66569
 
-CTRL + C SIGNAL CAUGHT!!!!CTRL + C SIGNAL CAUGHT!!!!
+[Timestamp: 549548 us] CTRL + C SIGNAL CAUGHT!!!![Timestamp: 549549 us] CTRL + C SIGNAL CAUGHT!!!!

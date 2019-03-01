@@ -55,4 +55,4 @@
 [Timestamp: 381234 us] Parent ID:32010, Posix thread ID:32011 (child)sending message from shared memory:From shm child to shm parent msg number:6
  LED control:1
 
-CTRL + C SIGNAL CAUGHT!!!!CTRL + C SIGNAL CAUGHT!!!!
+[Timestamp: 381239 us] CTRL + C SIGNAL CAUGHT!!!![Timestamp: 381239 us] CTRL + C SIGNAL CAUGHT!!!!

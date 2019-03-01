@@ -10,4 +10,4 @@
 [Timestamp: 598823 us] Parent ID:31491, Posix thread ID:31492server recieved string:From Client to server msg 2 LED control:16778260
 [Timestamp: 599078 us] Parent ID:31491, Posix thread ID:31492server sending string:From server to client msg 2 LED control:-1095431759
 [Timestamp: 600363 us] Parent ID:1482, Posix thread ID:31491Client recieved string:From server to client msg 2 LED control:-1095431759
-CTRL + C SIGNAL CAUGHT!!!!CTRL + C SIGNAL CAUGHT!!!!
+[Timestamp: 600373 us] CTRL + C SIGNAL CAUGHT!!!![Timestamp: 600373 us] CTRL + C SIGNAL CAUGHT!!!!
