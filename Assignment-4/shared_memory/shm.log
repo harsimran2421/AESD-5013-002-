@@ -1,0 +1,58 @@
+[Timestamp: 267263 us] Parent ID:1482, Posix thread ID:32010Successful in creating shared memory
+[Timestamp: 267749 us] Parent ID:1482, Posix thread ID:32010successful in truncating shared memory
+[Timestamp: 267988 us] Parent ID:1482, Posix thread ID:32010Successful in MMAP
+[Timestamp: 268526 us] Parent ID:1482, Posix thread ID:32010successfull in sem_open
+[Timestamp: 269963 us] Parent ID:32010, Posix thread ID:32011Successful in creating shared memory
+[Timestamp: 270629 us] Parent ID:32010, Posix thread ID:32011Successful in MMAP
+[Timestamp: 271122 us] Parent ID:32010, Posix thread ID:32011successfull in sem_open
+[Timestamp: 271364 us] Parent ID:32010, Posix thread ID:32011 (child)recieved message from shared memory: LED control:0
+[Timestamp: 271536 us] Parent ID:32010, Posix thread ID:32011 (child)sending message from shared memory:From shm child to shm parent msg number:0
+ LED control:1
+[Timestamp: 268975 us] Parent ID:1482, Posix thread ID:32010(parent) sending message in shared memory:From shm parent to shm child msg number:0
+ LED control:1
+[Timestamp: 280372 us] Parent ID:32010, Posix thread ID:32011 (child)recieved message from shared memory:From shm parent to shm child msg number:0
+ LED control:1
+[Timestamp: 280659 us] Parent ID:32010, Posix thread ID:32011 (child)sending message from shared memory:From shm child to shm parent msg number:1
+ LED control:0
+[Timestamp: 290327 us] Parent ID:1482, Posix thread ID:32010(parent) recieved message in shared memory:From shm child to shm parent msg number:1
+ LED control:0
+[Timestamp: 290712 us] Parent ID:1482, Posix thread ID:32010(parent) sending message in shared memory:From shm parent to shm child msg number:1
+ LED control:0
+[Timestamp: 302249 us] Parent ID:32010, Posix thread ID:32011 (child)recieved message from shared memory:From shm parent to shm child msg number:1
+ LED control:0
+[Timestamp: 308141 us] Parent ID:32010, Posix thread ID:32011 (child)sending message from shared memory:From shm child to shm parent msg number:2
+ LED control:1
+[Timestamp: 312678 us] Parent ID:1482, Posix thread ID:32010(parent) recieved message in shared memory:From shm child to shm parent msg number:2
+ LED control:1
+[Timestamp: 313225 us] Parent ID:1482, Posix thread ID:32010(parent) sending message in shared memory:From shm parent to shm child msg number:2
+ LED control:1
+[Timestamp: 321034 us] Parent ID:32010, Posix thread ID:32011 (child)recieved message from shared memory:From shm parent to shm child msg number:2
+ LED control:1
+[Timestamp: 321305 us] Parent ID:32010, Posix thread ID:32011 (child)sending message from shared memory:From shm child to shm parent msg number:3
+ LED control:0
+[Timestamp: 330353 us] Parent ID:1482, Posix thread ID:32010(parent) recieved message in shared memory:From shm child to shm parent msg number:3
+ LED control:0
+[Timestamp: 330787 us] Parent ID:1482, Posix thread ID:32010(parent) sending message in shared memory:From shm parent to shm child msg number:3
+ LED control:0
+[Timestamp: 341066 us] Parent ID:32010, Posix thread ID:32011 (child)recieved message from shared memory:From shm parent to shm child msg number:3
+ LED control:0
+[Timestamp: 341396 us] Parent ID:32010, Posix thread ID:32011 (child)sending message from shared memory:From shm child to shm parent msg number:4
+ LED control:1
+[Timestamp: 350370 us] Parent ID:1482, Posix thread ID:32010(parent) recieved message in shared memory:From shm child to shm parent msg number:4
+ LED control:1
+[Timestamp: 350790 us] Parent ID:1482, Posix thread ID:32010(parent) sending message in shared memory:From shm parent to shm child msg number:4
+ LED control:1
+[Timestamp: 360987 us] Parent ID:32010, Posix thread ID:32011 (child)recieved message from shared memory:From shm parent to shm child msg number:4
+ LED control:1
+[Timestamp: 361259 us] Parent ID:32010, Posix thread ID:32011 (child)sending message from shared memory:From shm child to shm parent msg number:5
+ LED control:0
+[Timestamp: 370355 us] Parent ID:1482, Posix thread ID:32010(parent) recieved message in shared memory:From shm child to shm parent msg number:5
+ LED control:0
+[Timestamp: 370919 us] Parent ID:1482, Posix thread ID:32010(parent) sending message in shared memory:From shm parent to shm child msg number:5
+ LED control:0
+[Timestamp: 380967 us] Parent ID:32010, Posix thread ID:32011 (child)recieved message from shared memory:From shm parent to shm child msg number:5
+ LED control:0
+[Timestamp: 381234 us] Parent ID:32010, Posix thread ID:32011 (child)sending message from shared memory:From shm child to shm parent msg number:6
+ LED control:1
+
+CTRL + C SIGNAL CAUGHT!!!!CTRL + C SIGNAL CAUGHT!!!!

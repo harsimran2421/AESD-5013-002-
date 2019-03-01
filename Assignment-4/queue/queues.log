@@ -1,0 +1,47 @@
+[Timestamp: 812630 us] Parent ID:1482, Posix thread ID:30017Successful in creating message queue
+[Timestamp: 814628 us] Parent ID:30017, Posix thread ID:30018Successful in creating message queue
+[Timestamp: 815073 us] Parent ID:30017, Posix thread ID:30018 sending to message queue 1:From parent to child msg number:0
+ LED control:1
+[Timestamp: 816130 us] Parent ID:1482, Posix thread ID:30017 recieved message from queue 2:From child to parent msg number:0
+ LED control:1
+[Timestamp: 816454 us] Parent ID:1482, Posix thread ID:30017 sending to message queue 2:From child to parent msg number:0
+ LED control:1
+[Timestamp: 816719 us] Parent ID:30017, Posix thread ID:30018 recieved message from queue 1:From parent to child msg number:0
+ LED control:1
+[Timestamp: 816906 us] Parent ID:30017, Posix thread ID:30018 sending to message queue 1:From parent to child msg number:1
+ LED control:0
+[Timestamp: 817070 us] Parent ID:30017, Posix thread ID:30018 recieved message from queue 1:From parent to child msg number:1
+ LED control:0
+[Timestamp: 817290 us] Parent ID:30017, Posix thread ID:30018 sending to message queue 1:From parent to child msg number:2
+ LED control:1
+[Timestamp: 817442 us] Parent ID:30017, Posix thread ID:30018 recieved message from queue 1:From parent to child msg number:2
+ LED control:1
+[Timestamp: 817596 us] Parent ID:30017, Posix thread ID:30018 sending to message queue 1:From parent to child msg number:3
+ LED control:0
+[Timestamp: 817744 us] Parent ID:30017, Posix thread ID:30018 recieved message from queue 1:From parent to child msg number:3
+ LED control:0
+[Timestamp: 817892 us] Parent ID:30017, Posix thread ID:30018 sending to message queue 1:From parent to child msg number:4
+ LED control:1
+[Timestamp: 818035 us] Parent ID:30017, Posix thread ID:30018 recieved message from queue 1:From parent to child msg number:4
+ LED control:1
+[Timestamp: 818182 us] Parent ID:30017, Posix thread ID:30018 sending to message queue 1:From parent to child msg number:5
+ LED control:0
+[Timestamp: 818326 us] Parent ID:30017, Posix thread ID:30018 recieved message from queue 1:From parent to child msg number:5
+ LED control:0
+[Timestamp: 818500 us] Parent ID:30017, Posix thread ID:30018 sending to message queue 1:From parent to child msg number:6
+ LED control:1
+[Timestamp: 818648 us] Parent ID:30017, Posix thread ID:30018 recieved message from queue 1:From parent to child msg number:6
+ LED control:1
+[Timestamp: 818798 us] Parent ID:30017, Posix thread ID:30018 sending to message queue 1:From parent to child msg number:7
+ LED control:0
+[Timestamp: 818941 us] Parent ID:30017, Posix thread ID:30018 recieved message from queue 1:From parent to child msg number:7
+ LED control:0
+[Timestamp: 819089 us] Parent ID:30017, Posix thread ID:30018 sending to message queue 1:From parent to child msg number:8
+ LED control:1
+[Timestamp: 819235 us] Parent ID:30017, Posix thread ID:30018 recieved message from queue 1:From parent to child msg number:8
+ LED control:1
+[Timestamp: 819383 us] Parent ID:30017, Posix thread ID:30018 sending to message queue 1:From parent to child msg number:9
+ LED control:0
+[Timestamp: 819550 us] Parent ID:30017, Posix thread ID:30018 recieved message from queue 1:From parent to child msg number:9
+ LED control:0
+CTRL + C SIGNAL CAUGHT!!!!

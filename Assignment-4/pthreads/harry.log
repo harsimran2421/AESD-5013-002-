@@ -1,0 +1,127 @@
+[Timestamp: 974] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22577, Character read Thread created Successfully
+[Timestamp: 975] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22578, read thread executing
+[Timestamp: 988] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22578, read thread exiting
+Alphabet :j - count:26
+Alphabet :q - count:4
+Alphabet :x - count:84
+Alphabet :z - count:12
+[Timestamp: 990] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22577, cpu thread created successfully
+[Timestamp: 991] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22579, cpu thread executing
+[Timestamp: 163] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22581, Timer event occured CPU utilization is:
+cpu  16783 0 12992 279304 345 0 57 0 0 0
+
+[Timestamp: 238] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22585, Timer event occured CPU utilization is:
+cpu  16791 0 12992 279304 345 0 57 0 0 0
+
+[Timestamp: 342] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22589, Timer event occured CPU utilization is:
+cpu  16799 0 12993 279304 345 0 57 0 0 0
+
+[Timestamp: 438] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22593, Timer event occured CPU utilization is:
+cpu  16809 0 12994 279304 345 0 57 0 0 0
+
+[Timestamp: 538] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22597, Timer event occured CPU utilization is:
+cpu  16818 0 12995 279304 345 0 57 0 0 0
+
+[Timestamp: 641] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22601, Timer event occured CPU utilization is:
+cpu  16826 0 12996 279304 345 0 57 0 0 0
+
+[Timestamp: 742] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22605, Timer event occured CPU utilization is:
+cpu  16835 0 12997 279304 345 0 57 0 0 0
+
+[Timestamp: 842] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22609, Timer event occured CPU utilization is:
+cpu  16844 0 12998 279304 345 0 57 0 0 0
+
+[Timestamp: 941] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22613, Timer event occured CPU utilization is:
+cpu  16853 0 12999 279304 345 0 57 0 0 0
+
+[Timestamp: 42] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22617, Timer event occured CPU utilization is:
+cpu  16863 0 13000 279304 345 0 57 0 0 0
+
+[Timestamp: 138] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22621, Timer event occured CPU utilization is:
+cpu  16872 0 13001 279304 345 0 57 0 0 0
+
+[Timestamp: 262] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22627, Timer event occured CPU utilization is:
+cpu  16879 0 13005 279304 345 0 57 0 0 0
+
+[Timestamp: 359] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22637, Timer event occured CPU utilization is:
+cpu  16885 0 13010 279304 345 0 57 0 0 0
+
+[Timestamp: 462] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22646, Timer event occured CPU utilization is:
+cpu  16889 0 13015 279304 345 0 57 0 0 0
+
+[Timestamp: 541] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22653, Timer event occured CPU utilization is:
+cpu  16895 0 13017 279304 345 0 57 0 0 0
+
+[Timestamp: 641] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22657, Timer event occured CPU utilization is:
+cpu  16904 0 13018 279304 345 0 57 0 0 0
+
+[Timestamp: 741] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22661, Timer event occured CPU utilization is:
+cpu  16913 0 13019 279304 345 0 57 0 0 0
+
+[Timestamp: 842] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22665, Timer event occured CPU utilization is:
+cpu  16922 0 13020 279304 345 0 57 0 0 0
+
+[Timestamp: 941] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22669, Timer event occured CPU utilization is:
+cpu  16931 0 13021 279304 345 0 57 0 0 0
+
+[Timestamp: 42] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22673, Timer event occured CPU utilization is:
+cpu  16941 0 13022 279304 345 0 57 0 0 0
+
+[Timestamp: 141] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22677, Timer event occured CPU utilization is:
+cpu  16949 0 13023 279304 345 0 57 0 0 0
+
+[Timestamp: 241] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22681, Timer event occured CPU utilization is:
+cpu  16958 0 13024 279304 345 0 57 0 0 0
+
+[Timestamp: 341] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22685, Timer event occured CPU utilization is:
+cpu  16967 0 13025 279304 345 0 57 0 0 0
+
+[Timestamp: 441] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22689, Timer event occured CPU utilization is:
+cpu  16976 0 13026 279304 345 0 57 0 0 0
+
+[Timestamp: 542] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22693, Timer event occured CPU utilization is:
+cpu  16985 0 13027 279304 345 0 57 0 0 0
+
+[Timestamp: 642] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22697, Timer event occured CPU utilization is:
+cpu  16994 0 13028 279304 345 0 57 0 0 0
+
+[Timestamp: 742] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22701, Timer event occured CPU utilization is:
+cpu  17003 0 13029 279304 345 0 57 0 0 0
+
+[Timestamp: 842] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22705, Timer event occured CPU utilization is:
+cpu  17012 0 13030 279304 345 0 57 0 0 0
+
+[Timestamp: 938] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22709, Timer event occured CPU utilization is:
+cpu  17022 0 13031 279304 345 0 57 0 0 0
+
+[Timestamp: 42] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22713, Timer event occured CPU utilization is:
+cpu  17031 0 13032 279304 345 0 57 0 0 0
+
+[Timestamp: 141] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22717, Timer event occured CPU utilization is:
+cpu  17039 0 13033 279304 345 0 57 0 0 0
+
+[Timestamp: 238] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22721, Timer event occured CPU utilization is:
+cpu  17050 0 13033 279304 345 0 57 0 0 0
+
+[Timestamp: 338] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22725, Timer event occured CPU utilization is:
+cpu  17059 0 13034 279304 345 0 57 0 0 0
+
+[Timestamp: 442] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22729, Timer event occured CPU utilization is:
+cpu  17068 0 13034 279304 345 0 57 0 0 0
+
+[Timestamp: 541] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22733, Timer event occured CPU utilization is:
+cpu  17078 0 13034 279304 345 0 57 0 0 0
+
+[Timestamp: 638] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22737, Timer event occured CPU utilization is:
+cpu  17089 0 13034 279304 345 0 57 0 0 0
+
+[Timestamp: 738] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22741, Timer event occured CPU utilization is:
+cpu  17098 0 13035 279304 345 0 57 0 0 0
+
+[Timestamp: 838] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22745, Timer event occured CPU utilization is:
+cpu  17107 0 13036 279304 345 0 57 0 0 0
+
+[Timestamp: 942] Parent ID:1482, Posix thread ID:22577, Linux Thread ID:22749, Timer event occured CPU utilization is:
+cpu  17115 0 13037 279304 345 0 57 0 0 0
+
+[Timestamp: 988] Parent ID:13744, Posix thread ID:22577, Linux Thread ID:22749, cpu thread exiting due to SIGUSR1 signal

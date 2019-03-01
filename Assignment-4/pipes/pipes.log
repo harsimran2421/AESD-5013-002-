@@ -1,0 +1,15 @@
+[Timestamp: 539547 us] Parent ID:1482, Posix thread ID:30842p2c_pipe created successfully
+[Timestamp: 541326 us] Parent ID:1482, Posix thread ID:30842c2p_pipe created successfully
+[Timestamp: 544877 us] Parent ID:30842, Posix thread ID:30843Child Received string: From parent to child msg 0, String length = 26, led on: 1
+
+[Timestamp: 546270 us] Parent ID:1482, Posix thread ID:30842Parent Received string: From child to parent msg 0, String length = 26, led on: 66569
+
+[Timestamp: 547589 us] Parent ID:30842, Posix thread ID:30843Child Received string: From child to parent msg 0, String length = 26, led on: 66569
+
+[Timestamp: 548185 us] Parent ID:1482, Posix thread ID:30842Parent Received string: From child to parent msg 1, String length = 26, led on: 66568
+
+[Timestamp: 548963 us] Parent ID:30842, Posix thread ID:30843Child Received string: From child to parent msg 1, String length = 26, led on: 66568
+
+[Timestamp: 549508 us] Parent ID:1482, Posix thread ID:30842Parent Received string: From child to parent msg 2, String length = 26, led on: 66569
+
+CTRL + C SIGNAL CAUGHT!!!!CTRL + C SIGNAL CAUGHT!!!!
