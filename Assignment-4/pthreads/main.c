@@ -29,12 +29,8 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 #include <sys/syscall.h>
 
 typedef struct thread_content{
-
-    pthread_t tid;         // the thread identifier
-
-    char* filename;
-    char* log_file;
-
+  char* filename;
+  char* log_file;
 }thread_struct;
 
 timer_t timer_id;
@@ -42,10 +38,10 @@ pthread_t cpu_utilization, character_read;
 volatile int exit_flag = 0;
 void lower_case(char* str)
 {
-    if(*str >= 'A' && *str <= 'Z')
-    {
-      *str = *str + 32;
-    }
+  if(*str >= 'A' && *str <= 'Z')
+  {
+    *str = *str + 32;
+  }
 }
 
 void logging_function(int parent_id, int pthread_id, int thread_id, char *file_name,char* ip_str)
@@ -116,10 +112,10 @@ void sig_handler(union sigval sv)
 
 void usr_sig_handler(int sig)
 {
-		printf("SIGUSR1 or SIGUSR2 received, exiting the thread.\n");
-    timer_delete(timer_id);
-    printf("\n\nTIMER DELETED SUCCESFuLLY\n\n");
-    exit_flag = sig;
+  printf("SIGUSR1 or SIGUSR2 received, exiting the thread.\n");
+  timer_delete(timer_id);
+  printf("\n\nTIMER DELETED SUCCESFuLLY\n\n");
+  exit_flag = sig;
 
 }
 
