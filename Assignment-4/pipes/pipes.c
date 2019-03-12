@@ -99,30 +99,23 @@ int main(int argc, char *argv[])
     char ip_str[200];
     memset(ip_str,0,sizeof(ip_str));
     flag = 0;
-    // child process
     printf("Child process\n");
     msg_struct *ptr;
     msg_struct src_struct;
     ptr = &src_struct;
 
-    // child process read
-    char buff[sizeof(msg_struct)]={0};
-    //memset(buff,0,sizeof(msg_struct));
     for(int i = 0; i< 10; i++)
     {
       memset(ip_str,0,sizeof(ip_str));
       read(p2c_pipe[0], buff, sizeof(msg_struct));
       ptr = (msg_struct*)(buff);
       sprintf(ip_str,"Child Received string: %s, String length = %d, led on: %d\n", ptr->string, ptr->string_length, ptr->led_control);
-      logging_function(getppid(),getpid(),file_name,ip_str); 
-
-      // child process write        
+      logging_function(getppid(),getpid(),file_name,ip_str);     
       sprintf(src_struct.string, "From child to parent msg %d",i);
       src_struct.string_length = strlen(src_struct.string);
       src_struct.led_control ^= 1;
       ptr = &src_struct;
       write(c2p_pipe[1], ptr, sizeof(msg_struct));
-      //logging_function(getppid(),getpid(),file_name,); 
       printf("Data sent from child to parent\n");
     }
     close(c2p_pipe[1]);
@@ -135,26 +128,20 @@ int main(int argc, char *argv[])
   {
     char ip_str[200];
     flag = 1;
-    // parent process
     printf("Parent process\n");
-    // parent process write
     msg_struct *ptr;
-    msg_struct src_struct;
-    ptr = &src_struct;
+    msg_struct *src_struct;
     for(int i = 0; i<10;i++)
     {
       sleep(1);
       memset(ip_str,0,sizeof(ip_str));
-      //memset(ptr,0,sizeof(mesg_struct));
-      sprintf(src_struct.string, "From parent to child msg %d",i);
-      src_struct.string_length = strlen(src_struct.string);
-      src_struct.led_control = 1;
-      write(p2c_pipe[1], ptr, sizeof(msg_struct));
+      sprintf(src_struct->string, "From parent to child msg %d",i);
+      src_struct->string_length = strlen(src_struct->string);
+      src_struct->led_control = 1;
+      write(p2c_pipe[1], src_struct, sizeof(msg_struct));
       printf("Data sent from parent to child\n");
       while(!flag);
-      // parent process read
       char buff[sizeof(msg_struct)];
-      //memset(buff,0,sizeof(msg_struct));
       int ret = read(c2p_pipe[0], buff, sizeof(msg_struct));
       ptr = (msg_struct*)(buff);
       sprintf(ip_str,"Parent Received string: %s, String length = %d, led on: %d\n", ptr->string, ptr->string_length, ptr->led_control);
@@ -163,6 +150,6 @@ int main(int argc, char *argv[])
     close(c2p_pipe[0]);
     close(p2c_pipe[1]);
     close(c2p_pipe[1]);
-    close(p2c_pipe[0]); //close read pipe
+    close(p2c_pipe[0]);
   }    
 }
