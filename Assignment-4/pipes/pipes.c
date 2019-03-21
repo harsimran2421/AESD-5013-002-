@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
     flag = 1;
     printf("Parent process\n");
     msg_struct *ptr;
-    msg_struct *src_struct;
+    msg_struct *src_struct = (msg_struct *)malloc(sizeof(msg_struct));
     for(int i = 0; i<10;i++)
     {
       sleep(1);
