@@ -94,11 +94,11 @@ float Temp_Conversion(float temp, int unit)
   float temperature;
   if(unit == 2)
   {
-    temperature = (temperature * FAREN) + HEIT;
+    temperature = (temp* FAREN) + HEIT;
   }
   else if(unit ==3 )
   {
-    temperature = temperature + KELVIN;
+    temperature = temp + KELVIN;
   }
   return temperature;
 
