@@ -66,6 +66,9 @@ void light_handler(union sigval sv)
   memset(msg->thread_name,'\0',sizeof(msg->thread_name));
   memcpy(msg->thread_name,"light",strlen("light"));
   msg->sensor_value = light_value;
+  memset(msg->level,'\0',sizeof(msg->level));
+  memcpy(msg->level,"DATA",strlen("DATA"));
+
   msg->unit = 'L';
 
   /*send light sensor value to light queue*/

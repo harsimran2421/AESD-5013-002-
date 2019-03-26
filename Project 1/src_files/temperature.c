@@ -64,6 +64,8 @@ void temperature_handler(union sigval sv)
   memset(msg->thread_name,'\0',sizeof(msg->thread_name));
   memcpy(msg->thread_name,"temperature",strlen("temperature"));
   msg->sensor_value = temp_value;
+  memset(msg->level,'\0',sizeof(msg->level));
+  memcpy(msg->level,"DATA",strlen("DATA"));
   if(unit == 1)
     msg->unit = 'C';
   else if(unit == 2)

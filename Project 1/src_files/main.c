@@ -29,7 +29,7 @@ void main(int argc, char *argv[])
   thread_input->log_file = argv[1];
   if(!pthread_create(&light_task, NULL, light_function, (void *)thread_input))
   {
-    logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"LIGHT Thread created Successfully\n",NULL);
+    logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\nLIGHT Thread created Successfully\nLOG level:INFOi\n",NULL);
   }
   else
   {
@@ -38,7 +38,7 @@ void main(int argc, char *argv[])
   }
   if(!pthread_create (&temperature_task, NULL, temperature_function, (void*)thread_input))
   {
-    logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"temperature thread created successfully",NULL);
+    logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\ntemperature thread created successfully\nLOG level:INFO\n",NULL);
   }
   else
   {
@@ -48,7 +48,7 @@ void main(int argc, char *argv[])
 
   if(!pthread_create (&logging_task, NULL, logging_thread, (void*)thread_input))
   {
-    logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file," logging thread created successfully",NULL);
+    logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\nlogging thread created successfully\nLOG level:INFO\n",NULL);
   }
   else
   {

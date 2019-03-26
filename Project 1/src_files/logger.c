@@ -70,10 +70,10 @@ void logging_function(int parent_id, int pthread_id, int thread_id, char *file_n
   FILE *file_ptr = fopen(file_name,"a");
   struct timeval curr_time;
   gettimeofday(&curr_time, NULL);
-  fprintf(file_ptr,"[Timestamp: %ld] Parent ID:%d, Posix thread ID:%d, Linux Thread ID:%d, ",(curr_time.tv_sec),parent_id, pthread_id, thread_id);
+  fprintf(file_ptr,"[Timestamp: %ld seconds\n]",(curr_time.tv_sec));
   fprintf(file_ptr,"%s",ip_str);
   if(msg != NULL)
-    fprintf(file_ptr,"Thread:%s\tsensor_value:%.2f%c\n",msg->thread_name,msg->sensor_value,msg->unit);
+    fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f%c\n",msg->thread_name,msg->level,msg->sensor_value,msg->unit);
   else
     fprintf(file_ptr,"\n");
   fflush(file_ptr);
