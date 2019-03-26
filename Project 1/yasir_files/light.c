@@ -39,7 +39,15 @@ int Light_main()
     printf("\nError: SensorII Reading Failed!\n");
     return EXIT_FAILURE;
   }
+  uint8_t SensorID;
   //usleep(500);
+  result = Read_Sensor_ID(file,SensorID);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: SensorII Reading Failed!\n");
+    return EXIT_FAILURE;
+  }
+  printf("\nSensorID = %d\n",SensorID);
 
   result =Read_Light_Sensor(file);
   if(result == EXIT_FAILURE)
@@ -50,7 +58,6 @@ int Light_main()
   printf("\nLux is %f\n",Lux_Value);
   return EXIT_SUCCESS;
 }
-
 
 uint16_t Read_Data(int file, int flag)
 {
@@ -181,6 +188,24 @@ int Check_PowerUp(int file)
   else 
   {
     printf("\nFailed!\n");
+    return EXIT_FAILURE;
+  }
+  return EXIT_SUCCESS;
+}
+
+int Read_Sensor_ID(int file,uint8_t data)
+{
+  uint8_t value =Command_Control | Sensor_ID;
+  int result = I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  result = I2C_Read_Byte_Data(file,&data);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID Write Failed!\n");
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;

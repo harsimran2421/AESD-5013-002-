@@ -21,6 +21,8 @@
 #define Data_High0 0x0D 
 #define Data_Low1 0x0E
 #define Data_High1 0x0F
+#define Sensor_ID 0x0A
+
 
 //global variables
 int file;
@@ -41,4 +43,6 @@ int Turn_on_Light_sensor(int file);
 
 //function to see if power up is working
 int Check_PowerUp(int file);
+//function to read SensorID
+int Read_Sensor_ID(int file,uint8_t data);
 #endif
