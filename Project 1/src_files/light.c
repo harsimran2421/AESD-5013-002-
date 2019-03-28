@@ -38,22 +38,24 @@ void *light_function(void *arg)
   timer_create(CLOCK_REALTIME, &sev, &timer_id);
 
 /*set timer capabilities*/
-  trigger.it_value.tv_sec=6;
+  trigger.it_value.tv_sec=2;
   trigger.it_value.tv_nsec=0;
-  trigger.it_interval.tv_sec=6;
+  trigger.it_interval.tv_sec=2;
   trigger.it_interval.tv_nsec=0;
   timer_settime(timer_id,0, &trigger, NULL);
-  while(1);
+  while(exit_flag != 1);
+  timer_delete(timer_id);
   mq_close(ser_discriptor);
 }
 
 void light_handler(union sigval sv)
 {
+  pthread_cond_broadcast(&light_thread_cond);
   static int i;
   char *file_name = sv.sival_ptr;
   FILE *file_ptr;
   float light_value = 0;
-  printf("\nlogging light value:%d\n", i++);
+  //printf("\nlogging light value:%d\n", i++);
   int result = Light_main(&light_value);
   if(result == EXIT_FAILURE)
   {
@@ -61,7 +63,6 @@ void light_handler(union sigval sv)
   }
   else
   {
-  printf("light value is: %0.2f\n",light_value);
   msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
   memset(msg->thread_name,'\0',sizeof(msg->thread_name));
   memcpy(msg->thread_name,"light",strlen("light"));
@@ -79,7 +80,7 @@ void light_handler(union sigval sv)
   }
   else
   {
-    printf("Sent to light queue\n");
+    //printf("Sent to light queue\n");
     light_flag = 1;
   }
   }

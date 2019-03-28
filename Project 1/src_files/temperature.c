@@ -37,21 +37,24 @@ void *temperature_function(void *arg)
 /*set timer capabilities*/
   trigger.it_value.tv_sec=1;
   trigger.it_value.tv_nsec=0;
-  trigger.it_interval.tv_sec=3;
+  trigger.it_interval.tv_sec=1;
   trigger.it_interval.tv_nsec=0;
   timer_settime(timer_id,0, &trigger, NULL);
-  while(1);
+  while(exit_flag != 1);
+  timer_delete(timer_id);
+  mq_close(temp_discriptor);
 }
 
 void temperature_handler(union sigval sv)
 {
+  pthread_cond_broadcast(&temp_thread_cond);
   int unit = 1;
-  static int i;
+  static int count;
+  count++;
   char *file_name = sv.sival_ptr;
   FILE *file_ptr;
   float temp_value;
   int result = temp_main(&temp_value, unit);
-  printf("temperature value:%0.2f\n",temp_value);
   if(result == EXIT_FAILURE)
   { 
     printf("\nError: Failed to Run Temperature Sensor!\n");
@@ -59,7 +62,7 @@ void temperature_handler(union sigval sv)
   }
   else
   {
-  printf("\nlogging temperature %d\n",i++);
+//  printf("\nlogging temperature %d\n",i++);
   msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
   memset(msg->thread_name,'\0',sizeof(msg->thread_name));
   memcpy(msg->thread_name,"temperature",strlen("temperature"));
@@ -73,6 +76,7 @@ void temperature_handler(union sigval sv)
   else if(unit == 3)
     msg->unit = 'F';
   /*send light sensor value to light queue*/
+  printf("temperature value:%0.2f\n",temp_value);
   if(mq_send(temp_discriptor,(char *)msg,sizeof(msg_struct),0) < 0)
   {
     printf("Error sending to temperature queue\n");
@@ -144,20 +148,20 @@ int Read_Temperature(int file,int unit, float *temp_value)
   if(unit == 1)
   {
     final_temperature= temperature * Celsius;
-	  printf("/nTemp:%02fC  ", final_temperature);
+	//  printf("/nTemp:%02fC  ", final_temperature);
     *temp_value = final_temperature;
   }
   else if(unit == 2)
   {
     float final_temperature_F = Temp_Conversion(final_temperature,unit);
-    printf("Temp:%02fF  ", final_temperature_F);
+  //  printf("Temp:%02fF  ", final_temperature_F);
     *temp_value = final_temperature_F;
 
   }
   else if(unit == 3)
   {
     float final_temperature_K = Temp_Conversion(final_temperature,unit);
-    printf("Temp:%02fK  ", final_temperature_K);
+  //  printf("Temp:%02fK  ", final_temperature_K);
     *temp_value = final_temperature_K;
  }
   return EXIT_SUCCESS;

@@ -31,7 +31,9 @@
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 
-pthread_mutex_t bus_lock;
+pthread_mutex_t bus_lock, heartbeat_mutex, logger_mutex;
+pthread_cond_t temp_thread_cond,light_thread_cond;
+int exit_flag;
 
 typedef struct thread_content{
 
@@ -56,4 +58,7 @@ int temperature_flag;
 
 void *logging_thread(void *arg);
 void logging_function(int parent_id, int pthread_id, int thread_id, char *file_name,char* ip_str,msg_struct *msg);
+
+struct timespec timer_setup(uint32_t second_value, uint32_t nanosec_value);
+
 #endif
