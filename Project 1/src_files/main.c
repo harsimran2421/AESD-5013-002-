@@ -7,6 +7,7 @@
 #include "logger.h"
 #include "light.h"
 #include "temperature.h"
+#include "socket.h"
 
 void intHandler(int dummy) 
 {
@@ -24,7 +25,7 @@ void main(int argc, char *argv[])
     printf("\nPlease input the log file name\n");
     exit(0);
   }
-  pthread_t light_task, temperature_task, logging_task;
+  pthread_t light_task, temperature_task, logging_task, socket_task;
   
   if(pthread_mutex_init(&logger_mutex,NULL)!= 0)
   {
@@ -58,7 +59,7 @@ void main(int argc, char *argv[])
   thread_input->log_file = argv[1];
   if(!pthread_create(&light_task, NULL, light_function, (void *)thread_input))
   {
-    logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\nLIGHT Thread created Successfully\nLOG level:INFOi\n",NULL);
+    logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\nLIGHT Thread created Successfully\nLOG level:INFO",NULL);
   }
   else
   {
@@ -67,7 +68,7 @@ void main(int argc, char *argv[])
   }
   if(!pthread_create (&temperature_task, NULL, temperature_function, (void*)thread_input))
   {
-    logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\ntemperature thread created successfully\nLOG level:INFO\n",NULL);
+    logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\ntemperature thread created successfully\nLOG level:INFO",NULL);
   }
   else
   {
@@ -77,12 +78,21 @@ void main(int argc, char *argv[])
 
   if(!pthread_create (&logging_task, NULL, logging_thread, (void*)thread_input))
   {
-    logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\nlogging thread created successfully\nLOG level:INFO\n",NULL);
+    logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\nlogging thread created successfully\nLOG level:INFO",NULL);
   }
   else
   {
     printf("logging Thread creation failed\n");
     logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"logging Thread creation failed",NULL);
+  }
+  if(!pthread_create (&socket_task, NULL, socket_function, (void*)thread_input))
+  {
+    logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\nsocket thread created successfully\nLOG level:INFO",NULL);
+  }
+  else
+  {
+    printf("socket Thread creation failed\n");
+    logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"socket Thread creation failed",NULL);
   }
   int return_value = 0;
   while(exit_flag != 1)
