@@ -1,5 +1,4 @@
 /*APDS sensor*/
-
 //include headers
 #include<stdio.h>
 #include<stdlib.h>
@@ -42,13 +41,13 @@ int Light_main()
   }
   uint8_t SensorID;
   //usleep(500);
-  result = Read_Sensor_ID(file,SensorID);
+  result = Read_Sensor_ID(file,&SensorID);
   if(result == EXIT_FAILURE)
   {
     printf("\nError: SensorII Reading Failed!\n");
     return EXIT_FAILURE;
   }
-  printf("\nSensorID = %d\n",SensorID);
+  //printf("\nSensorID = %d\n",SensorID);
 
   result =Read_Light_Sensor(file);
   if(result == EXIT_FAILURE)
@@ -57,9 +56,37 @@ int Light_main()
     return EXIT_FAILURE;
   }
   printf("\nLux is %f\n",Lux_Value);
+ 
+  result =State(file,Lux_Value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: SensorII Status Failed!\n");
+    return EXIT_FAILURE;
+  }
+	
+  uint8_t in_value = 5;
+  
+  Write_Interrupt(file,&in_value);
+  usleep(10000);
+  Read_Interrupt(file);
+
   return EXIT_SUCCESS;
 }
 
+int State(int file,int LUX)
+{
+	if(LUX ==NULL)
+	{
+		return EXIT_FAILURE;
+	}
+	if(LUX >30)
+	{
+		printf("\tStatus: Light");
+	}
+	else printf("\tStatus: Dark");
+	return EXIT_SUCCESS;
+
+}
 uint16_t Read_Data(int file, int flag)
 {
   uint8_t LSB,MSB;
@@ -184,30 +211,130 @@ int Check_PowerUp(int file)
 
   if(value = Power_Up)
   {
-    printf("\nSensor Checkup Successfully!\n");
+    //printf("\nSensor Checkup Successfully!\n");
+    return EXIT_SUCCESS;
   }
   else 
   {
-    printf("\nFailed!\n");
+    //printf("\nFailed!\n");
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;
 }
 
-int Read_Sensor_ID(int file,uint8_t data)
+int Read_Sensor_ID(int file,uint8_t *data)
 {
-  uint8_t value =Command_Control | Sensor_ID;
+  uint8_t value = Command_Control | Sensor_ID;
   int result = I2C_Write_Byte(file,value);
   if(result == EXIT_FAILURE)
   {
     printf("\nError: Sensor_ID Write Failed!\n");
     return EXIT_FAILURE;
   }
-  result = I2C_Read_Byte_Data(file,&data);
+  result = I2C_Read_Byte_Data(file,data);
   if(result == EXIT_FAILURE)
   {
     printf("\nError: Sensor_ID Write Failed!\n");
     return EXIT_FAILURE;
   }
+  if(data = 0x50)
+  {
+    //printf("\nSensorID Read Successfull!\n");
+    return EXIT_SUCCESS;
+  }
+  return EXIT_SUCCESS;
+}
+
+int Read_Interrupt(int file)
+{
+  uint8_t value = Command_Control | Threshold_LL;
+  int data[3];
+  uint8_t *dat;
+  
+  int result = I2C_Read_Byte_Data(file,&value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID 2Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  //printf("\nValue in read%d", value); 
+  
+  value = Command_Control | Threshold_LH;
+  result = I2C_Read_Byte_Data(file,&value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID 2Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  //printf("\nValue in read%d", value); 
+
+
+  value = Command_Control | Threshold_HL;
+  result = I2C_Read_Byte_Data(file,&value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID 2Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  //printf("\nValue in read%d", value); 
+
+  
+  value = Command_Control | Threshold_HH;
+  result = I2C_Read_Byte_Data(file,&value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID 2Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  //printf("\nValue in read%d", value); 
+  return EXIT_SUCCESS;
+}
+
+int Write_Interrupt(int file, uint8_t *in_value)
+{
+  uint8_t value = Command_Control | Threshold_LL;
+  int data[3];
+  
+  int result = I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  data[0]=0x01;	
+  result = I2C_Write_Byte(file,data[0]);
+  
+
+  value = Command_Control | Threshold_LH;
+  result = I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  data[1]=0x02;	
+  result = I2C_Write_Byte(file,data[1]);
+  
+
+  value = Command_Control | Threshold_HL;
+  result = I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  data[2]=0x03;	
+  result = I2C_Write_Byte(file,data[2]);
+ 
+  value = Command_Control | Threshold_HH;
+  result = I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  data[3]=0x04;	
+  result = I2C_Write_Byte(file,data[3]);  
+  //printf("\nData write is %d %d %d %d \n",data[0],data[1],data[2],data[3]);
   return EXIT_SUCCESS;
 }

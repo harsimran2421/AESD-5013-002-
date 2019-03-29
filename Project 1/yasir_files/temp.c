@@ -1,7 +1,7 @@
 
 #include "temp.h"
 #include "i2c.h"
-
+int val;
 int temp_main(void)
 {
   int unit=1;
@@ -29,6 +29,25 @@ int temp_main(void)
     printf("\nError: Sensor Reading Failed!\n");
     return EXIT_FAILURE;
   }
+  result = Write_Configuration(file);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Write Configuration Failed!\n");
+    return EXIT_FAILURE;
+  }
+ result = Read_TLow(file);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Read TLow Failed!\n");
+    return EXIT_FAILURE;
+  }
+ result = Read_THigh(file);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor THigh Failed!\n");
+    return EXIT_FAILURE;
+  }
+
   return EXIT_SUCCESS;
 }
 
@@ -44,8 +63,8 @@ int Read_Temperature(int file,int unit)
     return EXIT_FAILURE;
   }
   usleep(500);
-  char buf[1];
-  result=I2C_Read_Word(file,buf);
+  char buffer[1];
+  result=I2C_Read_Word(file,buffer);
   if(result == EXIT_FAILURE)
   {
     perror("\nError: Failed to Write!\n");
@@ -53,21 +72,19 @@ int Read_Temperature(int file,int unit)
   } 
 	
   int temperature;
-	temperature = ((buf[0]) << 8) | (buf[1]);
-	temperature >>= 4;
-  //printf("\nTemperature =%d\n",temperature);
-  
+  temperature = ((buffer[0]) << 8) | (buffer[1]);
+  temperature >>= 4;
+
   //correcting the signed bit
 	if (temperature & (1 << 11))
   {
     temperature = temperature | Minus_Correction;
   }
-  float final_temperature = temperature * Celsius ;
-  
+  float  final_temperature= temperature * Celsius;
   if(unit == 1)
   {
     final_temperature= temperature * Celsius;
-	  printf("/nTemp:%02fC  ", final_temperature);
+	  printf("Temp:%02fC  ", final_temperature);
   }
   else if(unit == 2)
   {
@@ -81,5 +98,104 @@ int Read_Temperature(int file,int unit)
     printf("Temp:%02fK  ", final_temperature_K);
  }
     usleep(10);
+  return EXIT_SUCCESS;
+}
+
+
+int Read_TLow(int file)
+{
+  char buffer[1];	
+  int result = I2C_Write_Byte(file,TMPSensor_TLow);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  result = I2C_Read_Byte_Data(file,buffer);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  int temperature=0;
+  Write_Configuration(file);
+  float temp = 0.0;
+
+  if(val == 1)
+  {
+  	temperature = ((buffer[0]) << 8) | (buffer[1]);
+  	temperature >>= 3;
+	temp = temperature * Celsius;
+  }
+  else 
+  {
+	temperature = ((buffer[0]) << 8) | (buffer[1]);
+  	temperature >>= 4; 
+  	temp = temperature * Celsius ;
+  }	
+  //printf("\nRead Value TLow is %f\n",temp); 
+ 
+  return EXIT_SUCCESS;
+}
+
+int Read_THigh(int file)
+{
+  int result = I2C_Write_Byte(file,TMPSensor_THigh);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  uint8_t buffer[1];
+  result = I2C_Read_Word(file,buffer);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  float temp= 0.0;
+  int temperature = 0;
+  Write_Configuration(file);
+  if(val == 1)
+  {
+  	temperature = ((buffer[0]) << 8) | (buffer[1]);
+  	temperature >>= 3; 
+ 	temp = temperature * Celsius ;
+  }
+  else 
+  {
+	temperature = ((buffer[0]) << 8) | (buffer[1]);
+  	temperature >>= 4; 	
+  	temp = temperature * Celsius ;
+  }	
+  //printf("\nRead Value THigh is %f\n",temp);
+  return EXIT_SUCCESS;
+}
+
+
+int Write_Configuration(int file)
+{
+	
+  int result=I2C_Write_Byte(file,TMPSensor_Configuration);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  char buffer[1];
+  result = I2C_Read_Word(file,buffer);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Read!\n");
+    return EXIT_FAILURE;
+  }
+  unsigned char LSB =buffer[0];
+  LSB = LSB & Mask;
+  if(LSB =0x10)
+  {
+  	val =1;
+  }
+  else val =0;
+
   return EXIT_SUCCESS;
 }

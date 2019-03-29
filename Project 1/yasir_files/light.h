@@ -22,6 +22,10 @@
 #define Data_Low1 0x0E
 #define Data_High1 0x0F
 #define Sensor_ID 0x0A
+#define Threshold_LL 0x02
+#define Threshold_LH 0x03
+#define Threshold_HL 0x04
+#define Threshold_HH 0x05
 
 
 //global variables
@@ -31,7 +35,7 @@ float Lux_Value;
 /*functions*/
 //init function for light sensor to initialise and read
 int Light_main();
-
+int State(int file, int Lux);
 //read function to read LUX Low and High Values 
 uint16_t Read_Data(int file, int flag);
 
@@ -44,5 +48,7 @@ int Turn_on_Light_sensor(int file);
 //function to see if power up is working
 int Check_PowerUp(int file);
 //function to read SensorID
-int Read_Sensor_ID(int file,uint8_t data);
+int Read_Sensor_ID(int file,uint8_t *data);
+int Read_Interrupt(int file);
+int Write_Interrupt(int file, uint8_t *in_value);  
 #endif
