@@ -103,7 +103,7 @@ int temp_main(float *temp_value, int unit)
   if(result == EXIT_FAILURE)
   {
     printf("\nError: Sensor Reading Failed!\n");
-    pthread_mutex_lock(&bus_lock);
+    pthread_mutex_unlock(&bus_lock);
     return EXIT_FAILURE;
   }
 

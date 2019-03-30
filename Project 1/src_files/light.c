@@ -169,6 +169,7 @@ int Light_main(float *light_value)
   }
   pthread_mutex_unlock(&bus_lock); 
   return EXIT_SUCCESS;
+
 }
 
 uint16_t Read_Data(int file, int flag)
@@ -320,7 +321,7 @@ int Read_Sensor_ID(int file,uint8_t *data)
     printf("\nError: Sensor_ID Write Failed!\n");
     return EXIT_FAILURE;
   }
-  if(data = 0x50)
+  if(*data == 0x50)
   {
     //printf("\nSensorID Read Successfull!\n");
     return EXIT_SUCCESS;
@@ -452,7 +453,7 @@ int Disable_Interrupt_Control_Register(int file)
 
 int State(int file,int LUX)
 {
-	if(LUX ==NULL)
+	if(LUX <0)
 	{
 		return EXIT_FAILURE;
 	}

@@ -45,6 +45,14 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 #define Data_High0 0x0D 
 #define Data_Low1 0x0E
 #define Data_High1 0x0F
+#define Sensor_ID 0x0A
+#define Set_Gain 0x12
+#define Interrupt_Control_reg_Disable 0x06
+#define Interrupt_Control_reg_Enable 0x06
+#define Threshold_LL 0x02
+#define Threshold_LH 0x03
+#define Threshold_HL 0x04
+#define Threshold_HH 0x05
 
 /*global variables*/
 int file;
@@ -133,6 +141,7 @@ void *light_function(void *arg);
 /* ---------------------------------*/
 void light_handler(union sigval sv);
 
+
 /* -------------------------------*/
 /**
  * @Synopsis Read_Sensor_Id() reads the sensor ID connected to the I2C bus
@@ -190,4 +199,16 @@ int Disable_Interrupt_Control_Register(int file);
 /* ---------------------------------*/
 int Enable_Interrupt_Control_Register(int file);
 
+
+/* -------------------------------*/
+/**
+ * @Synopsis check the current state of based on Lux values whether it is currently dark or light
+ *
+ * @Param file to provide path for i2c bus
+ * @Param Lux input light value 
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int State(int file, int Lux);
 #endif
