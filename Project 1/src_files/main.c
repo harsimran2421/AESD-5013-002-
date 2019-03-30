@@ -8,6 +8,7 @@
 #include "light.h"
 #include "temperature.h"
 #include "socket.h"
+#include "user_led.h"
 
 void intHandler(int dummy) 
 {

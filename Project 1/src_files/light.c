@@ -55,6 +55,10 @@ void light_handler(union sigval sv)
   char *file_name = sv.sival_ptr;
   FILE *file_ptr;
   float light_value = 0;
+  static int status;
+  status ^=1;
+  printf("\n\nTURNING LED ON\n\n");
+  led_control(GREEN,status);
   //printf("\nlogging light value:%d\n", i++);
   int result = Light_main(&light_value);
   if(result == EXIT_FAILURE)

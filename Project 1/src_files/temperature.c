@@ -49,8 +49,6 @@ void temperature_handler(union sigval sv)
 {
   pthread_cond_broadcast(&temp_thread_cond);
   int unit = 1;
-  static int count;
-  count++;
   char *file_name = sv.sival_ptr;
   FILE *file_ptr;
   float temp_value;

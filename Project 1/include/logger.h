@@ -31,6 +31,10 @@
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 
+/*user libraries*/
+#include "user_led.h"
+
+
 pthread_mutex_t bus_lock, heartbeat_mutex, logger_mutex;
 pthread_cond_t temp_thread_cond,light_thread_cond;
 int exit_flag;
