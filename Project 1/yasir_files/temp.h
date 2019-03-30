@@ -14,7 +14,7 @@
 #define TMPSensor_Register 0x00
 #define TMPSensor_Configuration 0x01
 #define TMPSensor_TLow 0x02
-#define TMPSensor_THigh 0x02
+#define TMPSensor_THigh 0x03
 #define Mask 0b00010000
 #define Minus_Correction 0xF800
 #define Celsius 0.0625
@@ -28,6 +28,7 @@ int file;
 int temp_main(void);
 //read function to read data from TMA102 sensor in C,K,F
 int Read_Temperature(int file,int unit);
+int Write_pointer_reg(int file, uint8_t value);
 int Read_TLow(int file);
 int Read_THigh(int file);
 int Write_Configuration(int file);

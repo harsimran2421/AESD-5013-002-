@@ -63,12 +63,14 @@ int Light_main()
     printf("\nError: SensorII Status Failed!\n");
     return EXIT_FAILURE;
   }
-	
+  Enable_Interrupt_Control_Register(file);
   uint8_t in_value = 5;
   
   Write_Interrupt(file,&in_value);
   usleep(10000);
   Read_Interrupt(file);
+  Disable_Interrupt_Control_Register(file);
+  
 
   return EXIT_SUCCESS;
 }
@@ -81,9 +83,9 @@ int State(int file,int LUX)
 	}
 	if(LUX >30)
 	{
-		printf("\tStatus: Light");
+		printf("\nStatus: Light");
 	}
-	else printf("\tStatus: Dark");
+	else printf("\nStatus: Dark");
 	return EXIT_SUCCESS;
 
 }
@@ -183,7 +185,9 @@ int Turn_on_Light_sensor(int file)
     printf("\nError: Sensor Initialization Failed!\n");
     return EXIT_FAILURE;
   }
-  result = write_timing(file,0x12);
+  //Setting the Gain for the sensor
+  //Integration time set to 402ms 
+  result = write_timing(file,Set_Gain);
   if(result == EXIT_FAILURE)
   {
     printf("\nError: Sensor Initialization Failed!\n");
@@ -338,3 +342,63 @@ int Write_Interrupt(int file, uint8_t *in_value)
   //printf("\nData write is %d %d %d %d \n",data[0],data[1],data[2],data[3]);
   return EXIT_SUCCESS;
 }
+
+int Disable_Interrupt_Control_Register(int file)
+{
+  uint8_t value = Command_Control | Interrupt_Control_reg_Disable;
+  int result = I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Interrupt disable Failed!\n");
+    return EXIT_FAILURE;
+  }
+  value =0x23;
+  result=I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Interrupt Enable Failed!\n");
+    return EXIT_FAILURE;
+  }
+
+  int8_t data;
+  result = I2C_Read_Byte_Data(file,&data);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Interrupt Disable Read Failed!\n");
+    return EXIT_FAILURE;
+  }
+  //printf("\nRead Inter_Dis: %d %x\n",data,data);
+  return EXIT_SUCCESS;
+}
+
+
+int Enable_Interrupt_Control_Register(int file)
+{
+  uint8_t value = Command_Control | Interrupt_Control_reg_Enable;
+  int result = I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Interrupt Enable Failed!\n");
+    return EXIT_FAILURE;
+  }
+  value =0x23;
+  result=I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Interrupt Enable Failed!\n");
+    return EXIT_FAILURE;
+  }
+
+  uint8_t data=0;
+  result = I2C_Read_Byte_Data(file,&data);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Interrupt Disable Failed!\n");
+    return EXIT_FAILURE;
+  }
+  //printf("\nRead Inter_En: %d %x\n",data,data);
+  return EXIT_SUCCESS;
+
+}
+
+

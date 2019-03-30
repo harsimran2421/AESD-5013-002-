@@ -48,6 +48,7 @@ int I2C_init(int *file,uint8_t sensor)
 //write control function to write to the control registers
 uint8_t write_control(int file, uint8_t data)
 {
+  //writing to the command register
   uint8_t value = Command_Control | Command_Reg;
   int result = I2C_Write_Byte(file,value);
   if(result == EXIT_FAILURE)
@@ -55,6 +56,7 @@ uint8_t write_control(int file, uint8_t data)
     printf("\nError: Sensor Initialization Failed!\n");
     return EXIT_FAILURE;
   } 
+  //writing to the control register
   result = I2C_Write_Byte(file,data);
   if(result == EXIT_FAILURE)
   {

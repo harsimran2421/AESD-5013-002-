@@ -101,6 +101,15 @@ int Read_Temperature(int file,int unit)
   return EXIT_SUCCESS;
 }
 
+int Write_Pointer_Reg(int file, uint8_t value)
+{
+	int result = I2C_Write_Byte(file,value);
+  	if(result == EXIT_FAILURE)
+  	{
+    		perror("\nError: Failed to Write to Pointer!\n");
+    		return EXIT_FAILURE;
+  	}
+}
 
 int Read_TLow(int file)
 {
@@ -121,7 +130,7 @@ int Read_TLow(int file)
   Write_Configuration(file);
   float temp = 0.0;
 
-  if(val == 1)
+  if(val == 0)
   {
   	temperature = ((buffer[0]) << 8) | (buffer[1]);
   	temperature >>= 3;
@@ -133,7 +142,7 @@ int Read_TLow(int file)
   	temperature >>= 4; 
   	temp = temperature * Celsius ;
   }	
-  //printf("\nRead Value TLow is %f\n",temp); 
+  printf("\nRead Value TLow is %f\n",temp); 
  
   return EXIT_SUCCESS;
 }
@@ -156,7 +165,7 @@ int Read_THigh(int file)
   float temp= 0.0;
   int temperature = 0;
   Write_Configuration(file);
-  if(val == 1)
+  if(val == 0)
   {
   	temperature = ((buffer[0]) << 8) | (buffer[1]);
   	temperature >>= 3; 
@@ -168,15 +177,15 @@ int Read_THigh(int file)
   	temperature >>= 4; 	
   	temp = temperature * Celsius ;
   }	
-  //printf("\nRead Value THigh is %f\n",temp);
+  printf("\nRead Value THigh is %f\n",temp);
   return EXIT_SUCCESS;
 }
 
 
 int Write_Configuration(int file)
 {
-	
-  int result=I2C_Write_Byte(file,TMPSensor_Configuration);
+  int value =TMPSensor_Configuration;	
+  int result=Write_Pointer_Reg(file,value);
   if(result == EXIT_FAILURE)
   {
     perror("\nError: Failed to Write!\n");
@@ -189,7 +198,7 @@ int Write_Configuration(int file)
     perror("\nError: Failed to Read!\n");
     return EXIT_FAILURE;
   }
-  unsigned char LSB =buffer[0];
+  unsigned char LSB =buffer[1];
   LSB = LSB & Mask;
   if(LSB =0x10)
   {

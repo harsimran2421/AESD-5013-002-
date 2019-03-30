@@ -22,6 +22,9 @@
 #define Data_Low1 0x0E
 #define Data_High1 0x0F
 #define Sensor_ID 0x0A
+#define Set_Gain 0x12
+#define Interrupt_Control_reg_Disable 0x06
+#define Interrupt_Control_reg_Enable 0x06
 #define Threshold_LL 0x02
 #define Threshold_LH 0x03
 #define Threshold_HL 0x04
@@ -51,4 +54,6 @@ int Check_PowerUp(int file);
 int Read_Sensor_ID(int file,uint8_t *data);
 int Read_Interrupt(int file);
 int Write_Interrupt(int file, uint8_t *in_value);  
+int Disable_Interrupt_Control_Register(int file);
+int Enable_Interrupt_Control_Register(int file);
 #endif
