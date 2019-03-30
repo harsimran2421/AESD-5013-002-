@@ -17,6 +17,16 @@ and function defnition for i2c for project1*/
 //function defnition 
 //init function to define i2c path and
 //allocate the i2c bus 
+/* -------------------------------*/
+/**
+ * @Synopsis  
+ *
+ * @Param file
+ * @Param sensor
+ *
+ * @Returns   
+ */
+/* ---------------------------------*/
 int I2C_init(int *file, uint8_t sensor);
 
 //function to write control registers for 
