@@ -52,15 +52,32 @@ void temperature_handler(union sigval sv)
   char *file_name = sv.sival_ptr;
   FILE *file_ptr;
   float temp_value;
+  static int error_status;
   int result = temp_main(&temp_value, unit);
-  if(result == EXIT_FAILURE)
+  if(result == EXIT_FAILURE && error_status == 0)
   { 
+    error_status++;
     printf("\nError: Failed to Run Temperature Sensor!\n");
-    return;
+    msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
+    memset(msg->thread_name,'\0',sizeof(msg->thread_name));
+    memcpy(msg->thread_name,"MAIN",strlen("MAIN"));
+    memset(msg->level,'\0',sizeof(msg->level));
+    memcpy(msg->level,"ALERT",strlen("ALERT"));
+    msg->unit = '\0';
+    if(mq_send(temp_discriptor,(char *)msg,sizeof(msg_struct),0) < 0)
+    {
+      printf("Error sending to temperature queue\n");
+      mq_close(temp_discriptor);
+    }
+    else
+    {
+      printf("Sent to temperature queue\n");
+      temperature_flag = 1;
+    }
   }
-  else
+  else if(result == EXIT_SUCCESS)
   {
-//  printf("\nlogging temperature %d\n",i++);
+  error_status = 0;
   msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
   memset(msg->thread_name,'\0',sizeof(msg->thread_name));
   memcpy(msg->thread_name,"temperature",strlen("temperature"));
@@ -86,6 +103,10 @@ void temperature_handler(union sigval sv)
     temperature_flag = 1;
   }
   }
+  if(error_status > 0 && error_status%2 == 0)
+  {
+    printf("\ntemperature Sensor disconnected\n");
+  }
 }
 
 
@@ -95,14 +116,14 @@ int temp_main(float *temp_value, int unit)
   int result=I2C_init(&file,1);
   if(result == EXIT_FAILURE)
   {
-    printf("\nError: Sensor Initialization Failed!\n");
+    //printf("\nError: Sensor Initialization Failed!\n");
     pthread_mutex_lock(&bus_lock);
     return EXIT_FAILURE;
   }
   result = Read_Temperature(file,unit,temp_value);
   if(result == EXIT_FAILURE)
   {
-    printf("\nError: Sensor Reading Failed!\n");
+    //printf("\nError: Sensor Reading Failed!\n");
     pthread_mutex_unlock(&bus_lock);
     return EXIT_FAILURE;
   }
@@ -119,7 +140,7 @@ int Read_Temperature(int file,int unit, float *temp_value)
   int result=I2C_Write_Byte(file,TMPSensor_Register);
   if(result == EXIT_FAILURE)
   {
-    perror("\nError: Failed to Write!\n");
+    //perror("\nError: Failed to Write!\n");
     return EXIT_FAILURE;
   }
   usleep(500);
@@ -127,14 +148,13 @@ int Read_Temperature(int file,int unit, float *temp_value)
   result=I2C_Read_Word(file,buf);
   if(result == EXIT_FAILURE)
   {
-    perror("\nError: Failed to Write!\n");
+    //perror("\nError: Failed to Write!\n");
     return EXIT_FAILURE;
   } 
 	
   int temperature;
 	temperature = ((buf[0]) << 8) | (buf[1]);
 	temperature >>= 4;
-  //printf("\nTemperature =%d\n",temperature);
   
   //correcting the signed bit
 	if (temperature & (1 << 11))
@@ -146,20 +166,17 @@ int Read_Temperature(int file,int unit, float *temp_value)
   if(unit == 1)
   {
     final_temperature= temperature * Celsius;
-	//  printf("/nTemp:%02fC  ", final_temperature);
     *temp_value = final_temperature;
   }
   else if(unit == 2)
   {
     float final_temperature_F = Temp_Conversion(final_temperature,unit);
-  //  printf("Temp:%02fF  ", final_temperature_F);
     *temp_value = final_temperature_F;
 
   }
   else if(unit == 3)
   {
     float final_temperature_K = Temp_Conversion(final_temperature,unit);
-  //  printf("Temp:%02fK  ", final_temperature_K);
     *temp_value = final_temperature_K;
  }
   return EXIT_SUCCESS;
