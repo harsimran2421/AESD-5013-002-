@@ -210,7 +210,7 @@ int Enable_Interrupt_Control_Register(int file);
  * @Returns exit status based on success or failure
  */
 /* ---------------------------------*/
-int State(int file, int Lux);
+void light_state(float light_value, msg_struct *msg);
 
 int light_test();
 #endif

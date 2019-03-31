@@ -91,4 +91,6 @@ void *temperature_function(void *arg);
 void temperature_handler(union sigval sv);
 
 int temp_test();
+
+void temp_state(float temp_value, msg_struct *msg, int unit);
 #endif

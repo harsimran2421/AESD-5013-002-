@@ -122,6 +122,7 @@ void temperature_handler(union sigval sv)
     msg->sensor_value = temp_value;
     memset(msg->level,'\0',sizeof(msg->level));
     memcpy(msg->level,"DATA",strlen("DATA"));
+    temp_state(temp_value, msg, unit);
     if(unit == 1)
       msg->unit = 'C';
     else if(unit == 2)
@@ -245,4 +246,41 @@ int Read_Temperature(int file,int unit, float *temp_value)
     *temp_value = final_temperature_K;
  }
   return EXIT_SUCCESS;
+}
+
+void temp_state(float temp_value, msg_struct *msg, int unit)
+{
+  if(unit == 1)
+  {
+    if(temp_value >30)
+    {
+      memcpy(msg->state,"hot\0",strlen("hot\0"));
+    }
+    else
+    {
+      memcpy(msg->state,"cool\0",strlen("cool\0"));
+    }
+  }
+  else if(unit ==2)
+  {
+    if(temp_value >300)
+    {
+      memcpy(msg->state,"hot\0",strlen("hot\0"));
+    }
+    else
+    {
+      memcpy(msg->state,"cool\0",strlen("cool\0"));
+    }
+  }
+  else if(unit ==3)
+  {
+    if(temp_value >30)
+    {
+      memcpy(msg->state,"hot\0",strlen("hot\0"));
+    }
+    else
+    {
+      memcpy(msg->state,"cool\0",strlen("cool\0"));
+    }
+  }
 }

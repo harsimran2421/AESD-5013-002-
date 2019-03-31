@@ -71,6 +71,7 @@ typedef struct message_struct
 {
   char thread_name[20];
   char level[6];
+  char state[6];
   float sensor_value;
   char unit;
 

@@ -84,15 +84,10 @@ void logging_function(int parent_id, int pthread_id, int thread_id, char *file_n
   if(msg != NULL)
   {
     if(strcmp(msg->level,"DATA") == 0)
-      fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f%c\n",msg->thread_name,msg->level,msg->sensor_value,msg->unit);
+      fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f%c\nstate:%s\n",msg->thread_name,msg->level,msg->sensor_value,msg->unit,msg->state);
     else
       fprintf(file_ptr,"Thread:%s\nLog level:%s\n",msg->thread_name,msg->level,msg->sensor_value,msg->unit);
   }
-/*  else
-  {
-    fprintf(file_ptr,"\n");
-  }*/
-
   fprintf(file_ptr,"%s\n",ip_str);
   fflush(file_ptr);
   fclose(file_ptr);

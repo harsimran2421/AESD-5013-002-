@@ -71,7 +71,6 @@ void light_handler(union sigval sv)
       memset(msg->thread_name,'\0',sizeof(msg->thread_name));
       memcpy(msg->thread_name,"light",strlen("light"));
       memset(msg->level,'\0',sizeof(msg->level));
-      memcpy(msg->level,"ALERT",strlen("ALERT"));
       msg->unit = '\0';
       if(mq_send(ser_discriptor,(char *)msg,sizeof(msg_struct),0) < 0)
       {
@@ -99,6 +98,8 @@ void light_handler(union sigval sv)
     memset(msg->level,'\0',sizeof(msg->level));
     memcpy(msg->level,"DATA",strlen("DATA"));
     msg->unit = 'L';
+    memset(msg->state,'\0',sizeof(msg->state));
+    light_state(light_value,msg); 
     printf("Light value is %0.2f%c\n\n",msg->sensor_value,msg->unit);
     /*send light sensor value to light queue*/
     if(mq_send(ser_discriptor,(char *)msg,sizeof(msg_struct),0) < 0)
@@ -473,18 +474,16 @@ int Disable_Interrupt_Control_Register(int file)
   return EXIT_SUCCESS;
 }
 
-int State(int file,int LUX)
+void light_state(float LUX, msg_struct *msg)
 {
-	if(LUX <0)
-	{
-		return EXIT_FAILURE;
-	}
 	if(LUX >30)
 	{
-		printf("\nStatus: Light");
+    memcpy(msg->state,"light\0",strlen("light\0"));
 	}
-	else printf("\nStatus: Dark");
-	return EXIT_SUCCESS;
+	else
+  {
+    memcpy(msg->state,"dark\0",strlen("dark\0"));
+  }	
 }
 
 int Enable_Interrupt_Control_Register(int file)
