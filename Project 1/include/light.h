@@ -15,7 +15,8 @@
 *           - light_handler() light timer handler which logs the light value periodically by addding new light value to the temp queue.
 * 
 * References:
-*           
+*           -https://www.broadcom.com/products/optical-sensors/ambient-light-photo-sensors/apds-9301
+*           -https://learn.sparkfun.com/tutorials/apds-9301-sensor-hookup-guide/all         
 _._._._._._._._._._._._._._._._._._._._._.*/
 
 #ifndef LIGHT_H

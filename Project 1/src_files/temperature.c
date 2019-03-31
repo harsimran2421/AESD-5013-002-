@@ -3,7 +3,7 @@
 * Creation Date : 21-03-2019
 * Last Modified : Wed 31 March 2019 00:02:56 PM MDT
 * Created By : Harsimransingh and Yasir Shah
-* Description: Source file contataining function defintion for reading from the temperature sensor
+* Description: Source file contataining function defintion for temperature sensor read write functions
 * 
 * Functions:
 *           -temp_main() function is first initializes the I2C bus then calls the read_temperature function. 
