@@ -1,3 +1,23 @@
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : light.c
+* Creation Date : 20-03-2019
+* Last Modified : Wed 31 March 2019 00:09:00 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: header file to contatainging function declaration for light sensors
+* 
+* Functions:
+*           - Light_main() function is first initializes the I2C bus then calls the Read_Data function. 
+*           - Read_Data() it calculates the lux value based on channel 1 and channel 2 values depending on the datasheet
+*           - Read_Light_Sensor() it calculates the lux value based on channel 1 and channel 2 values depending on the datasheet 
+*           - Turn_on_Light_sensor() turns the sensor on
+*           - Check_PowerUp() to test if it successfully powers up the sensor
+*           - light_function() light pthread spawned calls this function
+*           - light_handler() light timer handler which logs the light value periodically by addding new light value to the temp queue.
+*           - light_test() function to test the light sensor during initial startup
+* References:
+*           -https://www.broadcom.com/products/optical-sensors/ambient-light-photo-sensors/apds-9301
+*           -https://learn.sparkfun.com/tutorials/apds-9301-sensor-hookup-guide/all         
+_._._._._._._._._._._._._._._._._._._._._.*/
 
 #include "light.h"
 
@@ -14,6 +34,7 @@ void *light_function(void *arg)
   attribute.mq_flags = 0;
   attribute.mq_curmsgs = 0;
 
+  /*create a queue for transferring light value to logger task*/
   ser_discriptor = mq_open ("/light_queue", O_RDWR | O_CREAT, 0666, &attribute);
   if (ser_discriptor < 0)
   {
@@ -42,29 +63,34 @@ void *light_function(void *arg)
   trigger.it_value.tv_nsec=0;
   trigger.it_interval.tv_sec=2;
   trigger.it_interval.tv_nsec=0;
+  /*enable timer*/
   timer_settime(timer_id,0, &trigger, NULL);
+  /*wait for the exit flag*/
   while(exit_flag != 1);
   timer_delete(timer_id);
+  /*close the queue before exit*/
   mq_close(ser_discriptor);
 }
 
 void light_handler(union sigval sv)
 {
+  /*For heartbeat implementation*/
   pthread_cond_broadcast(&light_thread_cond);
   static int i;
   char *file_name = sv.sival_ptr;
   FILE *file_ptr;
   float light_value = 0;
-  static int status;
   static int error_status;
-  status ^=1;
+  /*read temperature periodically*/
   int result = Light_main(&light_value);
   if(result == EXIT_FAILURE)
   {
     error_status++;
+    /*condition when sensor is plugged out*/
     if(error_status == 1)
     {
       int light_led_status = 1;
+      /*turn an led on to indicate sensor failure*/
       led_control(GREEN,light_led_status);
       printf("\nlight Sensor Disconnected\n");
       msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
@@ -72,6 +98,7 @@ void light_handler(union sigval sv)
       memcpy(msg->thread_name,"light",strlen("light"));
       memset(msg->level,'\0',sizeof(msg->level));
       msg->unit = '\0';
+      /*send alert message to the logger task*/
       if(mq_send(ser_discriptor,(char *)msg,sizeof(msg_struct),0) < 0)
       {
         printf("Error sending to light queue\n");
@@ -83,6 +110,7 @@ void light_handler(union sigval sv)
       }
     }
   }
+  /*condition is sensor is read successfully*/
   else if(result == EXIT_SUCCESS)
   {
     if(error_status != 0)
@@ -112,6 +140,7 @@ void light_handler(union sigval sv)
       light_flag = 1;
     }
   }
+  /*print error if sensor is disconnected*/
   if((error_status > 0))
   {
     printf("\nLight Sensor disconnected\n");
@@ -120,7 +149,9 @@ void light_handler(union sigval sv)
 
 int Light_main(float *light_value)
 {
+  /*lock mutex for synchronised I2C access*/
   pthread_mutex_lock(&bus_lock); 
+  /*intialize the I2C bus*/
   int result = I2C_init(&file,2);
   if(result == EXIT_FAILURE)
   {
@@ -157,6 +188,7 @@ int Light_main(float *light_value)
     pthread_mutex_unlock(&bus_lock);
     return EXIT_FAILURE;
   }
+  /*return the I2C bus mutex*/
   pthread_mutex_unlock(&bus_lock); 
   return EXIT_SUCCESS;
 
