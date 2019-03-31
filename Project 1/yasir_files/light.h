@@ -14,6 +14,7 @@
 
 //macros for Light Sensor APDS 9301
 #define Power_Up 0x03
+#define Power_Up_Return 0x33
 #define Command_Control 0x80
 #define Command_Reg 0x00
 #define Timing_Reg 0x01

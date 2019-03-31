@@ -21,7 +21,15 @@
 #define KELVIN 273.5
 #define FAREN 1.8
 #define HEIT 32
-
+#define TMPSensor_Conversion_8 0xC0
+#define TMPSensor_Conversion_4 0x10
+#define TMPSensor_Conversion_1 0x40
+#define EM_Set 0x10
+#define ShutDown_Set 0x6100
+#define ShutDown_Clear 0x6000
+#define Fault_Bits_4 0x7800
+#define Fault_Bits_1 0x6000
+#define Resolution 0x6000
 //global variable 
 int file;
 
@@ -31,5 +39,11 @@ int Read_Temperature(int file,int unit);
 int Write_pointer_reg(int file, uint8_t value);
 int Read_TLow(int file);
 int Read_THigh(int file);
+int Read_Resolution(int file);
+int Read_Fault_Bits(int file);
+int Set_ShutDown(int file);
+int Clear_ShutDown(int file);
+int Set_EM(int file);
+int Set_Conversion(int file);
 int Write_Configuration(int file);
 #endif

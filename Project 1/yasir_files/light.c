@@ -77,7 +77,7 @@ int Light_main()
 
 int State(int file,int LUX)
 {
-	if(LUX ==NULL)
+	if(LUX < 0)
 	{
 		return EXIT_FAILURE;
 	}
@@ -193,6 +193,7 @@ int Turn_on_Light_sensor(int file)
     printf("\nError: Sensor Initialization Failed!\n");
     return EXIT_FAILURE;
   }
+  return EXIT_SUCCESS;
 }
 
 //function to see if power up is working
@@ -212,8 +213,9 @@ int Check_PowerUp(int file)
     return EXIT_FAILURE;
   }
   int value = buf[0];
+  //printf("\nValue is %d %x\n",value,value);
 
-  if(value = Power_Up)
+  if(value == Power_Up_Return)
   {
     //printf("\nSensor Checkup Successfully!\n");
     return EXIT_SUCCESS;
@@ -241,7 +243,7 @@ int Read_Sensor_ID(int file,uint8_t *data)
     printf("\nError: Sensor_ID Write Failed!\n");
     return EXIT_FAILURE;
   }
-  if(data = 0x50)
+  if(*data == 0x50)
   {
     //printf("\nSensorID Read Successfull!\n");
     return EXIT_SUCCESS;
