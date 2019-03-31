@@ -48,6 +48,7 @@ void *logging_thread(void *arg)
   }
   while(exit_flag!=1)
   {
+    pthread_cond_broadcast(&logger_thread_cond);
     if(light_flag)
     {
       msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));

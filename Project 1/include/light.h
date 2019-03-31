@@ -211,4 +211,6 @@ int Enable_Interrupt_Control_Register(int file);
  */
 /* ---------------------------------*/
 int State(int file, int Lux);
+
+int light_test();
 #endif

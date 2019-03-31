@@ -64,6 +64,8 @@ void light_handler(union sigval sv)
     error_status++;
     if(error_status == 1)
     {
+      int light_led_status = 1;
+      led_control(GREEN,light_led_status);
       printf("\nlight Sensor Disconnected\n");
       msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
       memset(msg->thread_name,'\0',sizeof(msg->thread_name));
@@ -84,25 +86,30 @@ void light_handler(union sigval sv)
   }
   else if(result == EXIT_SUCCESS)
   {
-  error_status = 0;
-  msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
-  memset(msg->thread_name,'\0',sizeof(msg->thread_name));
-  memcpy(msg->thread_name,"light",strlen("light"));
-  msg->sensor_value = light_value;
-  memset(msg->level,'\0',sizeof(msg->level));
-  memcpy(msg->level,"DATA",strlen("DATA"));
-  msg->unit = 'L';
-  printf("Light value is %0.2f%c\n\n",msg->sensor_value,msg->unit);
-  /*send light sensor value to light queue*/
-  if(mq_send(ser_discriptor,(char *)msg,sizeof(msg_struct),0) < 0)
-  {
-    printf("Error sending to light queue\n");
-    mq_close(ser_discriptor);
-  }
-  else
-  {
-    light_flag = 1;
-  }
+    if(error_status != 0)
+    {
+      int light_led_status = 0;
+      led_control(GREEN,light_led_status);
+    }
+    error_status = 0;
+    msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
+    memset(msg->thread_name,'\0',sizeof(msg->thread_name));
+    memcpy(msg->thread_name,"light",strlen("light"));
+    msg->sensor_value = light_value;
+    memset(msg->level,'\0',sizeof(msg->level));
+    memcpy(msg->level,"DATA",strlen("DATA"));
+    msg->unit = 'L';
+    printf("Light value is %0.2f%c\n\n",msg->sensor_value,msg->unit);
+    /*send light sensor value to light queue*/
+    if(mq_send(ser_discriptor,(char *)msg,sizeof(msg_struct),0) < 0)
+    {
+      printf("Error sending to light queue\n");
+      mq_close(ser_discriptor);
+    }
+    else
+    {
+      light_flag = 1;
+    }
   }
   if((error_status > 0))
   {
@@ -152,6 +159,50 @@ int Light_main(float *light_value)
   pthread_mutex_unlock(&bus_lock); 
   return EXIT_SUCCESS;
 
+}
+
+int light_test()
+{
+  float light_value;
+  pthread_mutex_lock(&bus_lock); 
+  int result = I2C_init(&file,2);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Sensor Initialization Failed!\n");
+    pthread_mutex_unlock(&bus_lock);
+    return EXIT_FAILURE;
+  }
+  result = Turn_on_Light_sensor(file);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: SensorII Reading Failed!\n");
+    pthread_mutex_unlock(&bus_lock);
+    return EXIT_FAILURE;
+  }
+  
+  result = Check_PowerUp(file);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: SensorII Reading Failed!\n");
+    pthread_mutex_unlock(&bus_lock);
+    return EXIT_FAILURE;
+  }
+  uint8_t SensorID;
+  result = Read_Sensor_ID(file,&SensorID);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: SensorII Reading Failed!\n");
+    return EXIT_FAILURE;
+  }
+  result =Read_Light_Sensor(file, &light_value);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: SensorII Reading Failed!\n");
+    pthread_mutex_unlock(&bus_lock);
+    return EXIT_FAILURE;
+  }
+  pthread_mutex_unlock(&bus_lock); 
+  return EXIT_SUCCESS;
 }
 
 uint16_t Read_Data(int file, int flag)

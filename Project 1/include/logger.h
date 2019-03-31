@@ -53,7 +53,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 #endif
 
 pthread_mutex_t bus_lock, heartbeat_mutex, logger_mutex;
-pthread_cond_t temp_thread_cond,light_thread_cond;
+pthread_cond_t temp_thread_cond,light_thread_cond, logger_thread_cond;
 int exit_flag;
 int light_flag;
 int temperature_flag;
