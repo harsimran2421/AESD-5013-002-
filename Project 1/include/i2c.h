@@ -49,5 +49,5 @@ int I2C_Write_Byte(int file , uint8_t data);
 //Write I2C data one single word
 int I2C_Write_Word(int file , uint8_t *data);
 //Write I2C data with 16bit data
-int I2C_Write_Bytes(int file , uint8_t * data);
+int I2C_Write_Bytes(int file , uint16_t * data);
 #endif

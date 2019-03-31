@@ -72,13 +72,12 @@ void temperature_handler(union sigval sv)
 {
   /*For heartbeat implementation*/
   pthread_cond_broadcast(&temp_thread_cond);
-  int unit = 1;
   char *file_name = sv.sival_ptr;
   FILE *file_ptr;
   float temp_value;
   static int error_status;
   /*read temperature periodically*/
-  int result = temp_main(&temp_value, unit);
+  int result = temp_main(&temp_value, UNIT);
   if(result == EXIT_FAILURE)
   { 
     error_status++;
@@ -122,12 +121,13 @@ void temperature_handler(union sigval sv)
     msg->sensor_value = temp_value;
     memset(msg->level,'\0',sizeof(msg->level));
     memcpy(msg->level,"DATA",strlen("DATA"));
-    temp_state(temp_value, msg, unit);
-    if(unit == 1)
+    memset(msg->state,'\0',sizeof(msg->state));
+    temp_state(temp_value, msg, UNIT);
+    if(UNIT == 1)
       msg->unit = 'C';
-    else if(unit == 2)
+    else if(UNIT == 2)
       msg->unit = 'K';
-    else if(unit == 3)
+    else if(UNIT == 3)
       msg->unit = 'F';
     printf("Temperature value:%0.2f%c\tState:%s\n",msg->sensor_value,msg->unit,msg->state);
     /*send data to the logger task*/
@@ -283,4 +283,290 @@ void temp_state(float temp_value, msg_struct *msg, int unit)
       memcpy(msg->state,"cool\0",strlen("cool\0"));
     }
   }
+}
+
+int Write_Pointer_Reg(int file, uint8_t value)
+{
+	int result = I2C_Write_Byte(file,value);
+  	if(result == EXIT_FAILURE)
+  	{
+    		perror("\nError: Failed to Write to Pointer!\n");
+    		return EXIT_FAILURE;
+  	}
+}
+
+int Read_TLow(int file)
+{
+  int val = 0;
+  char buffer[1];	
+  int result = I2C_Write_Byte(file,TMPSensor_TLow);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  result = I2C_Read_Byte_Data(file,buffer);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  int temperature=0;
+  Write_Configuration(file, val);
+  float temp = 0.0;
+
+  if(val == 1)
+  {
+  	temperature = ((buffer[0]) << 8) | (buffer[1]);
+  	temperature >>= 3;
+	temp = temperature * Celsius;
+  }
+  else 
+  {
+	temperature = ((buffer[0]) << 8) | (buffer[1]);
+  	temperature >>= 4; 
+  	temp = temperature * Celsius ;
+  }	
+  printf("Read Value TLow is %f ",temp); 
+ 
+  return EXIT_SUCCESS;
+}
+
+int Read_THigh(int file)
+{
+  int val = 0;
+  int result = I2C_Write_Byte(file,TMPSensor_THigh);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  uint8_t buffer[1];
+  result = I2C_Read_Word(file,buffer);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  float temp= 0.0;
+  int temperature = 0;
+  Write_Configuration(file, val);
+  if(val == 1)
+  {
+  	temperature = ((buffer[0]) << 8) | (buffer[1]);
+  	temperature >>= 3; 
+ 	temp = temperature * Celsius ;
+  }
+  else 
+  {
+	temperature = ((buffer[0]) << 8) | (buffer[1]);
+  	temperature >>= 4; 	
+  	temp = temperature * Celsius ;
+  }	
+  printf("Read Value THigh is %f ",temp);
+  return EXIT_SUCCESS;
+}
+
+int Read_Resolution(int file)
+{
+  uint16_t value = Resolution;
+  int result=I2C_Write_Bytes(file,&value);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  char buffer[1];
+  result = I2C_Read_Word(file,buffer);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Read!\n");
+    return EXIT_FAILURE;
+  }
+  unsigned char MSB =buffer[0];
+  MSB = MSB & 0b01100000;
+  if(MSB == 0x13)
+  {
+	printf("Resolution at 12 ");
+  }
+  else 
+  {
+ 	printf("Resolutiion at 13 ");
+  }
+  return EXIT_SUCCESS;
+}
+
+int Read_Fault_Bits(int file)
+{
+  uint16_t value = Fault_Bits_4;	
+ 
+  int result=I2C_Write_Bytes(file,&value);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  char buffer[1];
+  result = I2C_Read_Word(file,buffer);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Read!\n");
+    return EXIT_FAILURE;
+  }
+  unsigned char MSB =buffer[0];
+  unsigned char LSB= buffer[1];
+  //MSB = MSB & 0b01111000;
+  if(MSB ==0x13)
+  {
+	printf("Fault Bits 4 ");
+  }
+  else 
+  {
+ 	printf("Fault Bits less than 4 ");
+  }
+  return EXIT_SUCCESS;
+}
+int Clear_ShutDown(int file)
+{
+  uint16_t value =ShutDown_Clear;	
+  int result=Write_Pointer_Reg(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  char buffer[1];
+  result = I2C_Read_Word(file,buffer);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Read!\n");
+    return EXIT_FAILURE;
+  }
+  unsigned char MSB =buffer[0];
+  //MSB = MSB & 0b011000001;
+  
+  if(MSB == 0x60)
+  {
+	printf("ShutDown Mode Enable ");
+  }
+  else 
+  {
+ 	printf("ShutDown Mode Disable ");
+  }
+  return EXIT_SUCCESS;
+}
+int Set_ShutDown(int file)
+{
+  uint16_t value =ShutDown_Set;	
+  int result=Write_Pointer_Reg(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  char buffer[1];
+  result = I2C_Read_Word(file,buffer);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Read!\n");
+    return EXIT_FAILURE;
+  }
+  unsigned char MSB =buffer[0];
+  
+  if(MSB == 0x13)
+  {
+	printf("ShutDown Mode Enable ");
+  }
+  else 
+  {
+ 	printf("ShutDown Mode Disable ");
+  }
+  return EXIT_SUCCESS;
+}
+int Set_EM(int file)
+{
+  uint16_t value =EM_Set;	
+  int result=Write_Pointer_Reg(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  char buffer[1];
+  result = I2C_Read_Word(file,buffer);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Read!\n");
+    return EXIT_FAILURE;
+  }
+  unsigned char LSB =buffer[1];
+  
+  if(LSB ==0x10)
+  {
+	printf("Extended Mode 13 Bit ");
+  }
+  else 
+  {
+ 	printf("Extended Mode 12 Bit ");
+  }
+  return EXIT_SUCCESS;
+}
+int Set_Conversion(int file)
+{
+  uint16_t value =TMPSensor_Conversion_8;	
+  int result=Write_Pointer_Reg(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write_Convert!\n");
+    return EXIT_FAILURE;
+  }
+  char buffer[1];
+  result = I2C_Read_Word(file,buffer);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Read_Convert!\n");
+    return EXIT_FAILURE;
+  }
+  unsigned char LSB =buffer[1];
+  
+  if(LSB == 0x40)
+  {
+  	printf("1Hz Frequency set! ");
+  }
+  else if(LSB == 0xc0)
+  {
+  	printf("8Hz Frequency set! ");
+  }
+  else
+  {
+  	printf("4Hz Frequency Set by Default ");
+  }
+  return EXIT_SUCCESS;
+}
+
+int Write_Configuration(int file, int val)
+{
+  uint16_t value =TMPSensor_Configuration;	
+  int result=Write_Pointer_Reg(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Write!\n");
+    return EXIT_FAILURE;
+  }
+  char buffer[1];
+  result = I2C_Read_Word(file,buffer);
+  if(result == EXIT_FAILURE)
+  {
+    perror("\nError: Failed to Read!\n");
+    return EXIT_FAILURE;
+  }
+  unsigned char LSB =buffer[1];
+  LSB = LSB & Mask;
+  if(LSB ==0x10)
+  {
+  	val =1;
+  }
+  else val =0;
+
+  return EXIT_SUCCESS;
 }

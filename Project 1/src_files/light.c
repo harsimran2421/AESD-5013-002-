@@ -100,7 +100,7 @@ void light_handler(union sigval sv)
     msg->unit = 'L';
     memset(msg->state,'\0',sizeof(msg->state));
     light_state(light_value,msg); 
-    printf("Light value is %0.2f%c\tState:%s\n\n",msg->sensor_value,msg->unit,msg->state);
+    printf("Light value is %0.2f%c\t\tState:%s\n\n",msg->sensor_value,msg->unit,msg->state);
     /*send light sensor value to light queue*/
     if(mq_send(ser_discriptor,(char *)msg,sizeof(msg_struct),0) < 0)
     {
@@ -335,18 +335,18 @@ int Read_Sensor_ID(int file,uint8_t *data)
   int result = I2C_Write_Byte(file,value);
   if(result == EXIT_FAILURE)
   {
-//    printf("\nError: Sensor_ID Write Failed!\n");
+    perror("\nError: Sensor_ID Write Failed!\n");
     return EXIT_FAILURE;
   }
   result = I2C_Read_Byte_Data(file,data);
   if(result == EXIT_FAILURE)
   {
-//    printf("\nError: Sensor_ID Write Failed!\n");
+    perror("\nError: Sensor_ID Write Failed!\n");
     return EXIT_FAILURE;
   }
   if(*data == 0x50)
   {
-//    printf("\nSensorID Read Successfull!\n");
+    perror("\nSensorID Read Successfull!\n");
     return EXIT_SUCCESS;
   }
   return EXIT_SUCCESS;
@@ -361,16 +361,15 @@ int Read_Interrupt(int file)
   int result = I2C_Read_Byte_Data(file,&value);
   if(result == EXIT_FAILURE)
   {
-    //printf("\nError: Sensor_ID 2Write Failed!\n");
+    perror("\nError: Sensor_ID 2Write Failed!\n");
     return EXIT_FAILURE;
   }
-  //printf("\nValue in read%d", value); 
-  
+  //perror("\nValue in read%d", value); 
   value = Command_Control | Threshold_LH;
   result = I2C_Read_Byte_Data(file,&value);
   if(result == EXIT_FAILURE)
   {
-    //printf("\nError: Sensor_ID 2Write Failed!\n");
+    perror("\nError: Sensor_ID 2Write Failed!\n");
     return EXIT_FAILURE;
   }
   //printf("\nValue in read%d", value); 
@@ -380,7 +379,7 @@ int Read_Interrupt(int file)
   result = I2C_Read_Byte_Data(file,&value);
   if(result == EXIT_FAILURE)
   {
-    //printf("\nError: Sensor_ID 2Write Failed!\n");
+    perror("\nError: Sensor_ID 2Write Failed!\n");
     return EXIT_FAILURE;
   }
   //printf("\nValue in read%d", value); 

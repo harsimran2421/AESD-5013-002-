@@ -40,7 +40,27 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 #define KELVIN 273.5
 #define FAREN 1.8
 #define HEIT 32
-
+#define TMPSensor_Conversion_8 0xC0
+#define TMPSensor_Conversion_4 0x10
+#define TMPSensor_Conversion_1 0x40
+#define EM_Set 0x10
+#define ShutDown_Set 0x6100
+#define ShutDown_Clear 0x6000
+#define Fault_Bits_4 0x7800
+#define Fault_Bits_1 0x6000
+#define Resolution 0x6000
+#define TMPSensor_Configuration 0x01
+#define TMPSensor_TLow 0x02
+#define TMPSensor_THigh 0x03
+#define Mask 0b00010000
+#define KELVIN_THRESHOLD 298
+#define FARHENIET_THRESHOLD 77
+#define CELSIUS_THRESHOLD 25
+/*  1 - celsius
+ *  2 - Kelvin
+ *  3 - Farheniet
+ * */
+#define UNIT 1
 /*global variable*/
 int file;
 
@@ -60,7 +80,7 @@ int temp_main(float *temp_value,int unit);
 /**
  * @Synopsis  read function to read data from TMA102 sensor in C,K,F
  *
- * @Param file
+ * @Param file 
  * @Param unit used to indicate which is required by the calling function(Celcius, Kelvin or Farheniet)
  * @Param temp_value used to return the temperature value to the callin function
  *
@@ -90,7 +110,135 @@ void *temperature_function(void *arg);
 /* ---------------------------------*/
 void temperature_handler(union sigval sv);
 
+/* -------------------------------*/
+/**
+ * @Synopsis this is called during the startup to test whether the temperature sensor is functional or not
+ *
+ * @Returns returns exit status based on success or failure
+ */
+/* ---------------------------------*/
 int temp_test();
 
+/* -------------------------------*/
+/**
+ * @Synopsis this function checks to current state based on temperature threshold values
+ *
+ * @Param temp_value - provides current temperature value
+ * @Param msg - msg structure where state needs to be stored
+ * @Param unit - temperature unit
+ */
+/* ---------------------------------*/
 void temp_state(float temp_value, msg_struct *msg, int unit);
+
+/* -------------------------------*/
+/**
+ * @Synopsis used to write the pointer register of TMP 102 sensor
+ *
+ * @Param file  to provide path for i2c bus
+ * @Param value provides value to be written in the register
+ *
+ * @Returns exit status based on success or failure 
+ */
+/* ---------------------------------*/
+int Write_pointer_reg(int file, uint8_t value);
+
+/* -------------------------------*/
+/**
+ * @Synopsis reads the lower threshold value of TMP 102 sensor
+ *
+ * @Param file to provide path for i2c bus
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int Read_TLow(int file);
+
+/* -------------------------------*/
+/**
+ * @Synopsis reads the highe threshold value of TMP 102 sensor
+ *
+ * @Param file  to provide path for i2c bus
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int Read_THigh(int file);
+
+/* -------------------------------*/
+/**
+ * @Synopsis reads the current resolution on which the TMP 102 sensor is set
+ *
+ * @Param file  to provide path for i2c bus
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int Read_Resolution(int file);
+
+/* -------------------------------*/
+/**
+ * @Synopsis reads which fault bits are set currrently.
+ *
+ * @Param file to provide path for i2c bus
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int Read_Fault_Bits(int file);
+
+/* -------------------------------*/
+/**
+ * @Synopsis it sets the shutdown bit to reduce current consumption
+ *
+ * @Param file to provide path for i2c bus
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int Set_ShutDown(int file);
+
+/* -------------------------------*/
+/**
+ * @Synopsis clears the shutdown bit to make the sensor completely functional
+ *
+ * @Param file  to provide path for i2c bus
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int Clear_ShutDown(int file);
+
+/* -------------------------------*/
+/**
+ * @Synopsis`it changes the resolution of the sensor from 12 bits to 13 bits if wider temperature range is required
+ *
+ * @Param file to provide path for i2c bus
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int Set_EM(int file);
+
+/* -------------------------------*/
+/**
+ * @Synopsis it changes the read frequency of sensor between 1,4 and 8 Hz
+ *
+ * @Param file to provide path for i2c bus
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int Set_Conversion(int file);
+
+/* -------------------------------*/
+/**
+ * @Synopsis it writes the configuration register to access different sensor modes
+ *
+ * @Param file  to provide path for i2c bus
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int Write_Configuration(int file,int val);
+
 #endif
