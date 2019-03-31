@@ -38,6 +38,13 @@ float Lux_Value;
 
 /*functions*/
 //init function for light sensor to initialise and read
+/* --------------------------------------------------------------------------*/
+/**
+ * @Synopsis  
+ *
+ * @Returns   
+ */
+/* ----------------------------------------------------------------------------*/
 int Light_main();
 int State(int file, int Lux);
 //read function to read LUX Low and High Values 

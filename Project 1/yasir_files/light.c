@@ -217,10 +217,12 @@ int Check_PowerUp(int file)
 
   if(value == Power_Up_Return)
   {
+    //printf("\nSensor Checkup Successfully!\n");
     return EXIT_SUCCESS;
   }
   else 
   {
+    //printf("\nFailed!\n");
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;
@@ -243,6 +245,7 @@ int Read_Sensor_ID(int file,uint8_t *data)
   }
   if(*data == 0x50)
   {
+    //printf("\nSensorID Read Successfull!\n");
     return EXIT_SUCCESS;
   }
   return EXIT_SUCCESS;

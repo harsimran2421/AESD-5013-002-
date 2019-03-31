@@ -1,9 +1,48 @@
+/*Unit Test to test various functions related to Temperature
+ * Author: Harsimransingh Bindra & Yasir Aslam Shah
+ * Advance Embedded System Design
+ * Spring 2019
+ * Definition: Test module to test various functionality for teh temperarture sensor.Includes the following functions:
+ *Test_I2C_init(),Test_Read_Sensor_Celsius(),Test_Read_Sensor_Kelvin(),Test_Read_Sensor_Farenheit(),Test_Read_TLow(),Test_Read_THigh(int file);
+int Test_Read_Resolution(int file);
+int Test_Read_Fault_Bits(int file);
+int Test_Clear_ShutDown(int file):
+int Test_Set_ShutDown(int file):
+int Test_Set_EM(int file);
+int Test_Set_Conversion(int file);
+int Test_Write_Configuration(int file);
+void MY_ASSERT_NOT_EQUAL(int result);
+
+
+ * */
+
+//Standard Header files
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+//User Defined Header files
 #include "temp.h"
+
+//Macros
 #define status EXIT_FAILURE
+
+//Function declaration
+int Test_I2C_init(int file);
+int Test_Read_Sensor_Celsius(int file);
+int Test_Read_Sensor_Kelvin(int file);
+int Test_Read_Sensor_Farenheit(int file);
+int Test_Read_TLow(int file);
+int Test_Read_THigh(int file);
+int Test_Read_Resolution(int file);
+int Test_Read_Fault_Bits(int file);
+int Test_Clear_ShutDown(int file):
+int Test_Set_ShutDown(int file):
+int Test_Set_EM(int file);
+int Test_Set_Conversion(int file);
+int Test_Write_Configuration(int file);
 void MY_ASSERT_NOT_EQUAL(int result);
+
 
 
 int Test_I2C_init(int file)
