@@ -2,7 +2,7 @@ include sources.mk
 
 
 FLAGS += $(addprefix -I,$(INCLUDE_H))
-OBJ = main.c logger.c light.c temperature.c i2c.c socket.c user_led.c intial_test.c 
+OBJ = main.c logger.c light.c temperature.c i2c.c socket.c user_led.c intial_test.c test_light.c test_temp.c test_conversion.c 
 
 all:
 	rm -rf main cross-main harry.log

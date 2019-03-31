@@ -13,12 +13,13 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 #include "logger.h"
 #include "temperature.h"
 #include "light.h"
+#include "test.h"
 
 
 int intial_test(char *filename)
 {
   /*temperature sensor test*/
-  int result = temp_test();
+  int result = main_temp();
   if(result == EXIT_FAILURE)
   { 
       printf("\nTemperature Sensor disconnected!\n");
@@ -47,7 +48,7 @@ int intial_test(char *filename)
       logging_function(getppid(),getpid(),syscall(SYS_gettid),filename,"Temperature sensor working",msg);
   }
   /*light sensor test*/
-  result = light_test();
+  result = main_light();
   if(result == EXIT_FAILURE)
   { 
       printf("lightSensor disconnected!\n\n");
