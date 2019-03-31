@@ -1,8 +1,13 @@
-
-/*
- *References-https://www.geeksforgeeks.org/mutex-lock-for-linux-thread-synchronization/
- *
- */
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : main.c
+* Creation Date : 18-03-2019
+* Last Modified : Sun 31 Mar 2019 00:9:56 PM MDT
+* Created By : Harsimransingh
+* Description: Source file to create all needed pthreads and implement the heartbeat functionality
+*
+* References
+*           -https://www.geeksforgeeks.org/mutex-lock-for-linux-thread-synchronization/
+_._._._._._._._._._._._._._._._._._._._._.*/
 
 #include "logger.h"
 #include "light.h"
@@ -10,6 +15,13 @@
 #include "socket.h"
 #include "user_led.h"
 
+/* -------------------------------*/
+/**
+ * @Synopsis to set the exit_flag for graceful exit of all the functions
+ *
+ * @Param dummy
+ */
+/* ---------------------------------*/
 void intHandler(int dummy) 
 {
   printf("\nSIGNAL HANDLER CAUGHT\n");
@@ -98,6 +110,9 @@ void main(int argc, char *argv[])
   int return_value = 0;
   while(exit_flag != 1)
   {
+    static int light_led_status;
+    led_control(BLUE,light_led_status);
+    light_led_status ^=1;
     struct timespec ts;
     ts = timer_setup(4,4000000);
     pthread_mutex_lock(&heartbeat_mutex);
@@ -105,7 +120,9 @@ void main(int argc, char *argv[])
     pthread_mutex_unlock(&heartbeat_mutex);
     if(return_value == 0)
     {
-//      printf("\nThread one is working\n");
+//      static int light_led_status;
+//      led_control(BLUE,light_led_status);
+//      light_led_status ^=1;
     }
     else
     {
@@ -124,7 +141,9 @@ void main(int argc, char *argv[])
     pthread_mutex_unlock(&heartbeat_mutex);
     if(return_value == 0)
     {
-  //    printf("\nThread two is working\n");
+//      static int light_led_status;
+//      led_control(BLUE,light_led_status);
+//      light_led_status ^=1;
     }
     else
     {
