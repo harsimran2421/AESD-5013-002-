@@ -98,14 +98,14 @@ int Light_main(float *light_value)
   if(result == EXIT_FAILURE)
   {
     printf("\nError: Sensor Initialization Failed!\n");
-    pthread_mutex_lock(&bus_lock);
+    pthread_mutex_unlock(&bus_lock);
     return EXIT_FAILURE;
   }
   result = Turn_on_Light_sensor(file);
   if(result == EXIT_FAILURE)
   {
     printf("\nError: SensorII Reading Failed!\n");
-    pthread_mutex_lock(&bus_lock);
+    pthread_mutex_unlock(&bus_lock);
     return EXIT_FAILURE;
   }
   
@@ -113,20 +113,63 @@ int Light_main(float *light_value)
   if(result == EXIT_FAILURE)
   {
     printf("\nError: SensorII Reading Failed!\n");
-    pthread_mutex_lock(&bus_lock);
+    pthread_mutex_unlock(&bus_lock);
     return EXIT_FAILURE;
   }
-  //usleep(500);
-
+  uint8_t SensorID;
+  result = Read_Sensor_ID(file,&SensorID);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: SensorII Reading Failed!\n");
+    return EXIT_FAILURE;
+  }
   result =Read_Light_Sensor(file, light_value);
   if(result == EXIT_FAILURE)
   {
     printf("\nError: SensorII Reading Failed!\n");
-    pthread_mutex_lock(&bus_lock);
+    pthread_mutex_unlock(&bus_lock);
+    return EXIT_FAILURE;
+  }
+ 
+  result =State(file,Lux_Value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: SensorII Status Failed!\n");
+    pthread_mutex_unlock(&bus_lock);
+    return EXIT_FAILURE;
+  }
+  result = Enable_Interrupt_Control_Register(file);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Enable interrupt Failed\n");
+    pthread_mutex_unlock(&bus_lock);
+    return EXIT_FAILURE;
+  }
+  uint8_t in_value = 5;
+  result = Write_Interrupt(file,&in_value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Write interrupt Failed\n");
+    pthread_mutex_unlock(&bus_lock);
+    return EXIT_FAILURE;
+  }
+  result = Read_Interrupt(file);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Write interrupt Failed\n");
+    pthread_mutex_unlock(&bus_lock);
+    return EXIT_FAILURE;
+  }
+  result = Disable_Interrupt_Control_Register(file);
+    if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Write interrupt Failed\n");
+    pthread_mutex_unlock(&bus_lock);
     return EXIT_FAILURE;
   }
   pthread_mutex_unlock(&bus_lock); 
   return EXIT_SUCCESS;
+
 }
 
 uint16_t Read_Data(int file, int flag)
@@ -262,4 +305,192 @@ int Check_PowerUp(int file)
   }
   return EXIT_SUCCESS;
 }
+
+int Read_Sensor_ID(int file,uint8_t *data)
+{
+  uint8_t value = Command_Control | Sensor_ID;
+  int result = I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  result = I2C_Read_Byte_Data(file,data);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  if(*data == 0x50)
+  {
+    //printf("\nSensorID Read Successfull!\n");
+    return EXIT_SUCCESS;
+  }
+  return EXIT_SUCCESS;
+}
+
+int Read_Interrupt(int file)
+{
+  uint8_t value = Command_Control | Threshold_LL;
+  int data[3];
+  uint8_t *dat;
+  
+  int result = I2C_Read_Byte_Data(file,&value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID 2Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  //printf("\nValue in read%d", value); 
+  
+  value = Command_Control | Threshold_LH;
+  result = I2C_Read_Byte_Data(file,&value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID 2Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  //printf("\nValue in read%d", value); 
+
+
+  value = Command_Control | Threshold_HL;
+  result = I2C_Read_Byte_Data(file,&value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID 2Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  //printf("\nValue in read%d", value); 
+
+  
+  value = Command_Control | Threshold_HH;
+  result = I2C_Read_Byte_Data(file,&value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID 2Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  //printf("\nValue in read%d", value); 
+  return EXIT_SUCCESS;
+}
+
+int Write_Interrupt(int file, uint8_t *in_value)
+{
+  uint8_t value = Command_Control | Threshold_LL;
+  int data[3];
+  
+  int result = I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  data[0]=0x01;	
+  result = I2C_Write_Byte(file,data[0]);
+  
+
+  value = Command_Control | Threshold_LH;
+  result = I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  data[1]=0x02;	
+  result = I2C_Write_Byte(file,data[1]);
+  
+
+  value = Command_Control | Threshold_HL;
+  result = I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  data[2]=0x03;	
+  result = I2C_Write_Byte(file,data[2]);
+ 
+  value = Command_Control | Threshold_HH;
+  result = I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Sensor_ID Write Failed!\n");
+    return EXIT_FAILURE;
+  }
+  data[3]=0x04;	
+  result = I2C_Write_Byte(file,data[3]);  
+  //printf("\nData write is %d %d %d %d \n",data[0],data[1],data[2],data[3]);
+  return EXIT_SUCCESS;
+}
+
+int Disable_Interrupt_Control_Register(int file)
+{
+  uint8_t value = Command_Control | Interrupt_Control_reg_Disable;
+  int result = I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Interrupt disable Failed!\n");
+    return EXIT_FAILURE;
+  }
+  value =0x23;
+  result=I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Interrupt Enable Failed!\n");
+    return EXIT_FAILURE;
+  }
+
+  int8_t data;
+  result = I2C_Read_Byte_Data(file,&data);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Interrupt Disable Read Failed!\n");
+    return EXIT_FAILURE;
+  }
+  //printf("\nRead Inter_Dis: %d %x\n",data,data);
+  return EXIT_SUCCESS;
+}
+
+int State(int file,int LUX)
+{
+	if(LUX <0)
+	{
+		return EXIT_FAILURE;
+	}
+	if(LUX >30)
+	{
+		printf("\nStatus: Light");
+	}
+	else printf("\nStatus: Dark");
+	return EXIT_SUCCESS;
+}
+
+int Enable_Interrupt_Control_Register(int file)
+{
+  uint8_t value = Command_Control | Interrupt_Control_reg_Enable;
+  int result = I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Interrupt Enable Failed!\n");
+    return EXIT_FAILURE;
+  }
+  value =0x23;
+  result=I2C_Write_Byte(file,value);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Interrupt Enable Failed!\n");
+    return EXIT_FAILURE;
+  }
+
+  uint8_t data=0;
+  result = I2C_Read_Byte_Data(file,&data);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: Interrupt Disable Failed!\n");
+    return EXIT_FAILURE;
+  }
+  return EXIT_SUCCESS;
+
+}
+
 

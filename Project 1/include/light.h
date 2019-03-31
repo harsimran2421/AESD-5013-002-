@@ -45,6 +45,14 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 #define Data_High0 0x0D 
 #define Data_Low1 0x0E
 #define Data_High1 0x0F
+#define Sensor_ID 0x0A
+#define Set_Gain 0x12
+#define Interrupt_Control_reg_Disable 0x06
+#define Interrupt_Control_reg_Enable 0x06
+#define Threshold_LL 0x02
+#define Threshold_LH 0x03
+#define Threshold_HL 0x04
+#define Threshold_HH 0x05
 
 /*global variables*/
 int file;
@@ -133,4 +141,74 @@ void *light_function(void *arg);
 /* ---------------------------------*/
 void light_handler(union sigval sv);
 
+
+/* -------------------------------*/
+/**
+ * @Synopsis Read_Sensor_Id() reads the sensor ID connected to the I2C bus
+ *
+ * @Param file to provide path for i2c bus
+ * @Param data it returns the sensor ID read.
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int Read_Sensor_ID(int file,uint8_t *data);
+
+/* -------------------------------*/
+/**
+ * @Synopsis To check if the interrupt registers are written successfully or not
+ *
+ * @Param file to provide path for i2c bus
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int Read_Interrupt(int file);
+
+/* -------------------------------*/
+/**
+ * @Synopsis To write the interrupt register of the light sensor
+ *
+ * @Param file to provide path for i2c bus
+ * @Param in_value the value to be written on the interrupt register
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int Write_Interrupt(int file, uint8_t *in_value);  
+
+/* -------------------------------*/
+/**
+ * @Synopsis to disable the interrupts on the sensor
+ *
+ * @Param file to provide path for i2c bus
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int Disable_Interrupt_Control_Register(int file);
+
+/* -------------------------------*/
+/**
+ * @Synopsis to enable the interrupts for the light sensor
+ *
+ * @Param file to provide path for i2c bus
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int Enable_Interrupt_Control_Register(int file);
+
+
+/* -------------------------------*/
+/**
+ * @Synopsis check the current state of based on Lux values whether it is currently dark or light
+ *
+ * @Param file to provide path for i2c bus
+ * @Param Lux input light value 
+ *
+ * @Returns exit status based on success or failure
+ */
+/* ---------------------------------*/
+int State(int file, int Lux);
 #endif
