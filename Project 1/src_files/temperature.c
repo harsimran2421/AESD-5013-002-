@@ -129,7 +129,7 @@ void temperature_handler(union sigval sv)
       msg->unit = 'K';
     else if(unit == 3)
       msg->unit = 'F';
-    printf("Temperature value:%0.2f%c\n",msg->sensor_value,msg->unit);
+    printf("Temperature value:%0.2f%c\tState:%s\n",msg->sensor_value,msg->unit,msg->state);
     /*send data to the logger task*/
     if(mq_send(temp_discriptor,(char *)msg,sizeof(msg_struct),0) < 0)
     {

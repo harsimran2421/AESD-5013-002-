@@ -100,7 +100,7 @@ void light_handler(union sigval sv)
     msg->unit = 'L';
     memset(msg->state,'\0',sizeof(msg->state));
     light_state(light_value,msg); 
-    printf("Light value is %0.2f%c\n\n",msg->sensor_value,msg->unit);
+    printf("Light value is %0.2f%c\tState:%s\n\n",msg->sensor_value,msg->unit,msg->state);
     /*send light sensor value to light queue*/
     if(mq_send(ser_discriptor,(char *)msg,sizeof(msg_struct),0) < 0)
     {
