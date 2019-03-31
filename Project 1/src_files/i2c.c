@@ -27,7 +27,7 @@ int I2C_init(int *file,uint8_t sensor)
 	}
 	if(ioctl(temp_file,I2C_SLAVE,Slave_Address)<0)
 	{
-		printf("Error:IOCTL Failed!\n");
+		perror("Error:IOCTL Failed!\n");
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
@@ -40,13 +40,13 @@ uint8_t write_control(int file, uint8_t data)
   int result = I2C_Write_Byte(file,value);
   if(result == EXIT_FAILURE)
   {
-    printf("\nError: Sensor Initialization Failed!\n");
+    perror("\nError: Sensor Initialization Failed!\n");
     return EXIT_FAILURE;
   } 
   result = I2C_Write_Byte(file,data);
   if(result == EXIT_FAILURE)
   {
-    printf("\nError: Sensor Initialization Failed!\n");
+    perror("\nError: Sensor Initialization Failed!\n");
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;
@@ -59,13 +59,13 @@ uint8_t write_timing(int file, uint8_t data)
   int result = I2C_Write_Byte(file,value);
   if(result == EXIT_FAILURE)
   {
-    printf("\nError: Sensor Initialization Failed!\n");
+    perror("\nError: Sensor Initialization Failed!\n");
     return EXIT_FAILURE;
   } 
   result = I2C_Write_Byte(file,data);
   if(result == EXIT_FAILURE)
   {
-    printf("\nError: Sensor Initialization Failed!\n");
+    perror("\nError: Sensor Initialization Failed!\n");
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;

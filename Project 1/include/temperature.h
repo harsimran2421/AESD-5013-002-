@@ -2,7 +2,7 @@
 * File Name : temperature.h
 * Creation Date : 21-03-2019
 * Last Modified : Wed 31 March 2019 00:02:56 PM MDT
-* Created By : Harsimransingh
+* Created By : Harsimransingh and Yasir Shah
 * Description: header file to contatainging function declaration for temperature
 * 
 * Functions:

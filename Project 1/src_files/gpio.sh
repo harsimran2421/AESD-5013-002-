@@ -1,7 +1,7 @@
-#cd /sys/class/gpio/
-#echo 53 > export
-#cd gpio53/
-#echo out > direction
+cd /sys/class/gpio/
+echo 53 > export
+cd gpio53/
+echo out > direction
 
 cd /sys/class/gpio/
 echo 54 > export

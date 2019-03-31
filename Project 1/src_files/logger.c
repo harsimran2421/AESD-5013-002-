@@ -56,10 +56,6 @@ void *logging_thread(void *arg)
       {
         printf("Error receiving msg to  light queue\n");
       }
-      else
-      {
-        printf("received from light queue\n");
-      }
       logging_function(getppid(),getpid(),syscall(SYS_gettid),logging_thread->log_file,"Timer event light handler",msg);
     }
     if(temperature_flag)
@@ -69,10 +65,6 @@ void *logging_thread(void *arg)
       if(mq_receive(temperature_discriptor,(char *)msg,sizeof(msg_struct),0) < 0)
       {
         printf("Error receiving msg to  temperature queue\n");
-      }
-      else
-      {
-        printf("received from temperature queue\n");
       }
       logging_function(getppid(),getpid(),syscall(SYS_gettid),logging_thread->log_file,"Timer event temperature handler",msg);
     }
@@ -95,10 +87,11 @@ void logging_function(int parent_id, int pthread_id, int thread_id, char *file_n
     else
       fprintf(file_ptr,"Thread:%s\nLog level:%s\n",msg->thread_name,msg->level,msg->sensor_value,msg->unit);
   }
-  else
+/*  else
   {
     fprintf(file_ptr,"\n");
-  }
+  }*/
+
   fprintf(file_ptr,"%s\n",ip_str);
   fflush(file_ptr);
   fclose(file_ptr);

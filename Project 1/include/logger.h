@@ -2,7 +2,7 @@
 * File Name : logger.h
 * Creation Date : 19-03-2019
 * Last Modified : Sun 31 March 2019 00:10:11 PM MDT
-* Created By : Harsimransingh
+* Created By : Harsimransingh and Yasir Shah
 * Description: header file for logger function declaration and structure declarations
 * 
 * Functions:
@@ -48,6 +48,9 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 /*user libraries*/
 #include "user_led.h"
 
+#ifndef DEBUG
+#define perror(...) 
+#endif
 
 pthread_mutex_t bus_lock, heartbeat_mutex, logger_mutex;
 pthread_cond_t temp_thread_cond,light_thread_cond;

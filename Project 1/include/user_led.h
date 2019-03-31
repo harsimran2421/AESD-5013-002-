@@ -2,7 +2,7 @@
 * File Name : led_control.h
 * Creation Date : 29-03-2019
 * Last Modified : Sun 31 March 2019 00:10:12 PM MDT
-* Created By : Harsimransingh
+* Created By : Harsimransingh and Yasir Shah
 * Description: header file to control on board leds
 * Functions:
 *           led_control() to turn on board leds on or off based on the inputs

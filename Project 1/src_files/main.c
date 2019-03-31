@@ -25,7 +25,8 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 void intHandler(int dummy) 
 {
   printf("\nSIGNAL HANDLER CAUGHT\n");
-  exit_flag = 1;  
+  exit_flag = 1;
+  
 }
 
 
@@ -40,6 +41,7 @@ void main(int argc, char *argv[])
   }
   pthread_t light_task, temperature_task, logging_task, socket_task;
   
+  /*Mutex lock for synchronized access of logger function*/
   if(pthread_mutex_init(&logger_mutex,NULL)!= 0)
   {
     printf("\nlogger mutex creation failed\n");
@@ -50,26 +52,29 @@ void main(int argc, char *argv[])
     printf("\nBus lock mutex creation failed\n");
 
   }
+  /*Mutex lock for heartbeat pthread_cond_timedwait call*/
   if(pthread_mutex_init(&heartbeat_mutex,NULL)!=0)
   {
     printf("\nheartbeat mutex intialization failed\n");
     return;
   }
-
+  /*conditional variable to implement heartbeat*/
   if(pthread_cond_init(&temp_thread_cond,NULL)!=0)
   {
     printf("\ntemp Condition variable creation failed\n");
     return;
   }
+  /*conditional variable to implement heartbeat*/
   if(pthread_cond_init(&light_thread_cond,NULL)!=0)
   {
     printf("\ntemp Condition variable creation failed\n");
     return;
   }
-
-
+  
   thread_struct *thread_input = (thread_struct *)malloc(sizeof(struct thread_content));
   thread_input->log_file = argv[1];
+  
+  /*create light sensor thread*/
   if(!pthread_create(&light_task, NULL, light_function, (void *)thread_input))
   {
     logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\nLIGHT Thread created Successfully\nLOG level:INFO",NULL);
@@ -79,6 +84,8 @@ void main(int argc, char *argv[])
     printf("LIGHT read Thread creation failed\n");
     logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"LIGHT read Thread creation failed",NULL);
   }
+
+  /*create temperature sensor thread*/
   if(!pthread_create (&temperature_task, NULL, temperature_function, (void*)thread_input))
   {
     logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\ntemperature thread created successfully\nLOG level:INFO",NULL);
@@ -89,6 +96,7 @@ void main(int argc, char *argv[])
     logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"temperature Thread creation failed",NULL);
   }
 
+  /*create logging task thread*/
   if(!pthread_create (&logging_task, NULL, logging_thread, (void*)thread_input))
   {
     logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\nlogging thread created successfully\nLOG level:INFO",NULL);
@@ -98,6 +106,8 @@ void main(int argc, char *argv[])
     printf("logging Thread creation failed\n");
     logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"logging Thread creation failed",NULL);
   }
+
+  /*create socket task thread*/
   if(!pthread_create (&socket_task, NULL, socket_function, (void*)thread_input))
   {
     logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\nsocket thread created successfully\nLOG level:INFO",NULL);
@@ -110,21 +120,20 @@ void main(int argc, char *argv[])
   int return_value = 0;
   while(exit_flag != 1)
   {
+    /*Toggle led to indicate prgram is still running*/
     static int light_led_status;
     led_control(BLUE,light_led_status);
     light_led_status ^=1;
+    
+    /*heartbeat timer setup*/
     struct timespec ts;
     ts = timer_setup(4,4000000);
+    
+    /*to check if temperature thread is alive*/
     pthread_mutex_lock(&heartbeat_mutex);
     return_value = pthread_cond_timedwait(&temp_thread_cond,&heartbeat_mutex,&ts);
     pthread_mutex_unlock(&heartbeat_mutex);
-    if(return_value == 0)
-    {
-//      static int light_led_status;
-//      led_control(BLUE,light_led_status);
-//      light_led_status ^=1;
-    }
-    else
+    if(return_value != 0 && exit_flag != 1)
     {
       intHandler(0);
       msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
@@ -136,16 +145,12 @@ void main(int argc, char *argv[])
       logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Temperature thread stuck",msg);
       break;
     }
+    
+    /*to check is light thread is alive or not*/
     pthread_mutex_lock(&heartbeat_mutex);
     return_value = pthread_cond_timedwait(&light_thread_cond,&heartbeat_mutex,&ts);
     pthread_mutex_unlock(&heartbeat_mutex);
-    if(return_value == 0)
-    {
-//      static int light_led_status;
-//      led_control(BLUE,light_led_status);
-//      light_led_status ^=1;
-    }
-    else
+    if(return_value != 0 && exit_flag != 1)
     {
       intHandler(0);
       msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
@@ -158,7 +163,9 @@ void main(int argc, char *argv[])
       break;
     }
   }
+  /*join all the thread in completion*/
   pthread_join(temperature_task, NULL);
   pthread_join(light_task, NULL);
   pthread_join(logging_task,NULL);
 }
+
