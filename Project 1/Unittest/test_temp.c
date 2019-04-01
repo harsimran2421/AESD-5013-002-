@@ -37,11 +37,7 @@ int Test_I2C_init_Temp(int file)
 	printf("\nTest I2C Init:");
 	int result = I2C_init(&file,1);
 	int result1=MY_ASSERT_NOT_EQUAL(result);
-  if(result1 == EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-  return EXIT_SUCCESS;
+
 }
 /* --------------------------------------------------------------------------*/
 /**
@@ -337,75 +333,25 @@ int main_temp(void)
 {
 	int file;
 
-	int res = Test_I2C_init_Temp(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
+int res = Test_I2C_init_Temp(file);
   res = Test_Read_Sensor_Celsius(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
   res = Test_Read_Sensor_Kelvin(file);	
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
   res = Test_Read_Sensor_Farenheit(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
+
   res = Test_Write_Configuration(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
   res = Test_Read_TLow(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
+
   res = Test_Read_THigh(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
+
   res = Test_Read_Resolution(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
   res = Test_Read_Fault_Bits(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
   res = Test_Clear_ShutDown(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
   res = Test_Set_ShutDown(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
   res = Test_Set_EM(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
+
   res = Test_Set_Conversion(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
+
   res = Test_Write_Configuration(file);
-  if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-  return EXIT_SUCCESS;
+  
+  return 0;
 }

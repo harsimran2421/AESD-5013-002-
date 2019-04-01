@@ -89,10 +89,9 @@ int State(int file,int LUX)
 	return EXIT_SUCCESS;
 
 }
-uint16_t Read_Data(int file, int flag)
+uint16_t Read_Data(int file, int flag,uint16_t *Final)
 {
   uint8_t LSB,MSB;
-  uint16_t Final;
   uint8_t address;
   if(flag == 1)
   {
@@ -134,17 +133,30 @@ uint16_t Read_Data(int file, int flag)
     printf("\nError: SensorII Reading Failed!\n");
     return EXIT_FAILURE;
   }
-  Final = (MSB<<8)|(LSB);
+  *Final = (MSB<<8)|(LSB);
   //printf("\nValue is %d\n",Final);
-  return Final;
+  return EXIT_SUCCESS;
 }
 
 //function to read lux values
 int Read_Light_Sensor(int file)
 {
-  float data0 =(float)Read_Data(file,1);
-  float data1 =(float)Read_Data(file,2);  
-	if(data0 == 0)
+  uint16_t temp;
+  int result=Read_Data(file,1,&temp);
+  if(result == EXIT_FAILURE)
+  {
+    printf("\nError: SensorII Reading Failed!\n");
+    return EXIT_FAILURE;
+  }
+  float data0 =(float)temp;
+  result =Read_Data(file,2,&temp);  
+	if(result == EXIT_FAILURE)
+  {
+    printf("\nError: SensorII Reading Failed!\n");
+    return EXIT_FAILURE;
+  }
+  float data1=(float)temp;
+  if(data0 == 0)
 	{
 		perror("Error:Process Failed!");
 		return EXIT_FAILURE;

@@ -48,7 +48,7 @@ float Lux_Value;
 int Light_main();
 int State(int file, int Lux);
 //read function to read LUX Low and High Values 
-uint16_t Read_Data(int file, int flag);
+uint16_t Read_Data(int file, int flag,uint16_t *Final);
 
 //function to read lux value
 int Read_Light_Sensor(int file);

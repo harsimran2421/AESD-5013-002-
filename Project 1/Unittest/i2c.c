@@ -68,14 +68,14 @@ uint8_t write_control(int file, uint8_t data)
   int result = I2C_Write_Byte(file,value);
   if(result == EXIT_FAILURE)
   {
-    printf("\nError: Sensor Initialization Failed!\n");
+    //printf("\nError: Sensor Initialization Failed!\n");
     return EXIT_FAILURE;
   } 
   //writing to the control register
   result = I2C_Write_Byte(file,data);
   if(result == EXIT_FAILURE)
   {
-    printf("\nError: Sensor Initialization Failed!\n");
+    //printf("\nError: Sensor Initialization Failed!\n");
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;
@@ -88,13 +88,13 @@ uint8_t write_timing(int file, uint8_t data)
   int result = I2C_Write_Byte(file,value);
   if(result == EXIT_FAILURE)
   {
-    printf("\nError: Sensor Initialization Failed!\n");
+    //printf("\nError: Sensor Initialization Failed!\n");
     return EXIT_FAILURE;
   } 
   result = I2C_Write_Byte(file,data);
   if(result == EXIT_FAILURE)
   {
-    printf("\nError: Sensor Initialization Failed!\n");
+    //printf("\nError: Sensor Initialization Failed!\n");
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;
@@ -126,7 +126,7 @@ int I2C_Read_Byte_Data(int file , uint8_t *data)
 
 	if(read(file,data,1) != 1)
 	{
-		perror("Error :I2C BYTE Data Reading Failed!\n");
+		//perror("Error :I2C BYTE Data Reading Failed!\n");
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
@@ -136,7 +136,7 @@ int I2C_Read_Word(int file , uint8_t *data)
 {
 	if(read(file,data,2)!=2)
 	{
-		perror("Error :I2C WORD Data Reading Failed!\n");
+		//perror("Error :I2C WORD Data Reading Failed!\n");
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
@@ -147,7 +147,7 @@ int I2C_Write_Byte(int file , uint8_t data)
 {
 	if(write(file,&data,sizeof(data))!=1)
 	{
-		perror("Error :I2C BYTE Data Write Failed!\n");
+		//perror("Error :I2C BYTE Data Write Failed!\n");
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
@@ -158,7 +158,7 @@ int I2C_Write_Word(int file , uint32_t *data)
 {
 	if(write(file,data,3)!=3)
 	{
-		perror("Error : :I2C WORD Data Write Failed!\n");
+		//perror("Error : :I2C WORD Data Write Failed!\n");
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
@@ -169,7 +169,7 @@ int I2C_Write_Bytes(int file , uint16_t * data)
 {
 	if(write(file,data,2)!=2)
 	{
-		perror("Error : I2C BYTES Write Failed! \n");
+		//perror("Error : I2C BYTES Write Failed! \n");
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;

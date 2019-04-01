@@ -120,12 +120,10 @@ int MY_ASSERT_NOT_EQUAL(int result)
 	if(result != status)
 	{
 		printf("Pass!\n");
-		return EXIT_SUCCESS;
 	}
 	else
   {
     printf("Fail!");
-    return EXIT_FAILURE;
   }
 }
 
@@ -140,28 +138,10 @@ int main_conversion(void)
 {
 	int file;
 
-	int res = Test_I2C_init_Conversion(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-
-  res = Test_Read_Temperature_Celsius(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-
-  res = Test_Read_Temperature_Kelvin(file);	
-  if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-
+	Test_I2C_init_Conversion(file);
+	
+  Test_Read_Temperature_Celsius(file);
+  Test_Read_Temperature_Kelvin(file);	
   Test_Read_Temperature_Farenheit(file);
-  if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-  return EXIT_SUCCESS;
+	return 0;  
 }

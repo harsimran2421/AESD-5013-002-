@@ -21,26 +21,11 @@
 int main(void)
 {
   printf("**********TEST TEMPERATURE**********");
-  int res = main_temp();
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-  
+  main_temp();
   printf("**********TEST LIGHT**********");
-  res = main_light();
- 	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  } 
-  
+  main_light();
   printf("**********TEST CONVERSION**********");
-  res = main_conversion();
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-  
+  main_conversion();
   printf("**********END**********");
   return EXIT_SUCCESS;
 }

@@ -148,7 +148,8 @@ int Test_Read_Data(int file)
 	printf("\nTest Light Sensor Read Data:");
 	I2C_init(&file,2);
 	Turn_on_Light_sensor(file);
-	int result = Read_Data(file,1);
+  uint16_t temp;
+	int result = Read_Data(file,1,&temp);
 	int result1=MY_ASSERT_NOT_EQUAL(result);
   if(result1 == EXIT_FAILURE)
   {
@@ -260,46 +261,18 @@ int main_light(void)
 	uint8_t SensorID;
 	uint8_t in_value;
 
-	int res = Test_I2C_init_Light(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-  res = Test_Turn_on_light_sensor(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-  res = Test_Check_PowerUp(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-  res = Test_Read_Sensor_ID(file,SensorID);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-  res = Test_Light_Sensor(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-  res = Test_Status(file);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-  res = Test_Write_Interrupt(file,SensorID);
-	if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
-  res = Test_Read_Interrupt(file);
-  if(res ==EXIT_FAILURE)
-  {
-    return EXIT_FAILURE;
-  }
+	Test_I2C_init_Light(file);
+  Test_Turn_on_light_sensor(file);
+  Test_Check_PowerUp(file);
+  Test_Read_Sensor_ID(file,SensorID);
+  Test_Light_Sensor(file);
+
+  Test_Status(file);
+
+  Test_Write_Interrupt(file,SensorID);
+
+  Test_Read_Interrupt(file);
+  
   return EXIT_SUCCESS;
 }
 
