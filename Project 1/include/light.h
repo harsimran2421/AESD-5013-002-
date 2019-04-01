@@ -54,7 +54,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 #define Threshold_LH 0x03
 #define Threshold_HL 0x04
 #define Threshold_HH 0x05
-
+#define LIGHT_THRESHOLD 20
 /*global variables*/
 int file;
 float Lux_Value;

@@ -225,7 +225,7 @@ void temp_state(float temp_value, msg_struct *msg, int unit)
 {
   if(unit == 1)
   {
-    if(temp_value >30)
+    if(temp_value > CELSIUS_THRESHOLD)
     {
       memcpy(msg->state,"hot\0",strlen("hot\0"));
     }
@@ -236,7 +236,7 @@ void temp_state(float temp_value, msg_struct *msg, int unit)
   }
   else if(unit ==2)
   {
-    if(temp_value >300)
+    if(temp_value > KELVIN_THRESHOLD)
     {
       memcpy(msg->state,"hot\0",strlen("hot\0"));
     }
@@ -247,7 +247,7 @@ void temp_state(float temp_value, msg_struct *msg, int unit)
   }
   else if(unit ==3)
   {
-    if(temp_value >30)
+    if(temp_value > FARHENIET_THRESHOLD)
     {
       memcpy(msg->state,"hot\0",strlen("hot\0"));
     }

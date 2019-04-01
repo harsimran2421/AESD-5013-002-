@@ -463,7 +463,7 @@ int Disable_Interrupt_Control_Register(int file)
 
 void light_state(float LUX, msg_struct *msg)
 {
-	if(LUX >30)
+	if(LUX > LIGHT_THRESHOLD)
 	{
     memcpy(msg->state,"light\0",strlen("light\0"));
 	}
