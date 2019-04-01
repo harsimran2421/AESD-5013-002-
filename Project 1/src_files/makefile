@@ -20,4 +20,4 @@ client-cross:
 	arm-linux-gcc $(FLAGS) -o client client.c -lrt
 
 clean:
-	rm -rf main cross-main harry.log
+	rm -rf main client cross-main harry.log

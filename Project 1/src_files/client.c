@@ -11,7 +11,6 @@ void main()
   client_id = socket(AF_INET, SOCK_STREAM, 0);
   server_address.sin_family = AF_INET;
   server_address.sin_port = htons(PORT_NUMBER);
-  //server_address.sin_addr.s_addr = INADDR_ANY;
   inet_pton(AF_INET,"127.0.0.1",&server_address.sin_addr);
   int connection_status = connect(client_id, (struct sockaddr *) &server_address, sizeof(server_address));
   printf("Successfully connected to server!!!\n");

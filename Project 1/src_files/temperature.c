@@ -172,33 +172,6 @@ int temp_main(float *temp_value, int unit)
   return EXIT_SUCCESS;
 }
 
-/*to test the temperature sensor*/
-int temp_test()
-{
-  float temp_value;
-  /*lock mutex for synchronised I2C access*/
-  pthread_mutex_lock(&bus_lock);
-  /*intialize the I2C bus*/
-  int result=I2C_init(&file,1);
-  if(result == EXIT_FAILURE)
-  {
-    perror("\nError: Sensor Initialization Failed!\n");
-    pthread_mutex_unlock(&bus_lock);
-    return EXIT_FAILURE;
-  }
-  result = Read_Temperature(file,1,&temp_value);
-  if(result == EXIT_FAILURE)
-  {
-    perror("\nError: Sensor Reading Failed!\n");
-    pthread_mutex_unlock(&bus_lock);
-    return EXIT_FAILURE;
-  }
-  /*return the I2C bus mutex*/
-  pthread_mutex_unlock(&bus_lock);
-  return EXIT_SUCCESS;
-}
-
-
 //read function to read data from TMA102 sensor in C,K,F
 int Read_Temperature(int file,int unit, float *temp_value)
 {

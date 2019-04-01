@@ -194,50 +194,6 @@ int Light_main(float *light_value)
 
 }
 
-int light_test()
-{
-  float light_value;
-  pthread_mutex_lock(&bus_lock); 
-  int result = I2C_init(&file,2);
-  if(result == EXIT_FAILURE)
-  {
-    perror("\nError: Sensor Initialization Failed!\n");
-    pthread_mutex_unlock(&bus_lock);
-    return EXIT_FAILURE;
-  }
-  result = Turn_on_Light_sensor(file);
-  if(result == EXIT_FAILURE)
-  {
-    perror("\nError: SensorII Reading Failed!\n");
-    pthread_mutex_unlock(&bus_lock);
-    return EXIT_FAILURE;
-  }
-  
-  result = Check_PowerUp(file);
-  if(result == EXIT_FAILURE)
-  {
-    perror("\nError: SensorII Reading Failed!\n");
-    pthread_mutex_unlock(&bus_lock);
-    return EXIT_FAILURE;
-  }
-  uint8_t SensorID;
-  result = Read_Sensor_ID(file,&SensorID);
-  if(result == EXIT_FAILURE)
-  {
-    perror("\nError: SensorII Reading Failed!\n");
-    return EXIT_FAILURE;
-  }
-  result =Read_Light_Sensor(file, &light_value);
-  if(result == EXIT_FAILURE)
-  {
-    perror("\nError: SensorII Reading Failed!\n");
-    pthread_mutex_unlock(&bus_lock);
-    return EXIT_FAILURE;
-  }
-  pthread_mutex_unlock(&bus_lock); 
-  return EXIT_SUCCESS;
-}
-
 uint16_t Read_Data(int file, int flag)
 {
   uint8_t LSB,MSB;
