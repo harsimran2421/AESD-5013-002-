@@ -23,7 +23,7 @@
 *           -Set_Conversion()
 *           -Write_Configuration()
 * References:
-            -http://www.ti.com/lit/ds/symlink/tmp102.pdf
+*           -http://www.ti.com/lit/ds/symlink/tmp102.pdf
 *           -https://www.sparkfun.com/products/13314  
 *           
 _._._._._._._._._._._._._._._._._._._._._.*/

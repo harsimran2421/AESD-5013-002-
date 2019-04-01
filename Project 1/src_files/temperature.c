@@ -1,5 +1,5 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-* File Name : temperature.h
+* File Name : temperature.c
 * Creation Date : 21-03-2019
 * Last Modified : Wed 31 March 2019 00:02:56 PM MDT
 * Created By : Harsimransingh and Yasir Shah
@@ -10,8 +10,22 @@
 *           -Read_Temperature() read function to read data from TMA102 sensor in C,K,F
 *           -temperature_function() temperature pthread spawned calls this function which initalises the temperature queue intializes the timer parameters and starts a timer which logs temperature value periodically
 *           -temperature_handler() Temperature timer handler which logs the temperature periodically by addding new temperature value to the temp queue.
-* 
+*           -temp_test() used for intial testing of the sensor
+*           -temp_state() for knowing the current state
+*           -Write_pointer_reg()
+*           -Read_Tlow()
+*           -Read_Thigh()
+*           -Read_Resolution()
+*           -Read_Fault_Bits()
+*           -Set_ShutDown()
+*           -Clear_ShutDown()
+*           -Set_EM()
+*           -Set_Conversion()
+*           -Write_Configuration()
+
 * References:
+*           -http://www.ti.com/lit/ds/symlink/tmp102.pdf
+*           -https://www.sparkfun.com/products/13314  
 *           
 _._._._._._._._._._._._._._._._._._._._._.*/
 

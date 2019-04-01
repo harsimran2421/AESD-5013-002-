@@ -1,5 +1,5 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-* File Name : initial_test.h
+* File Name : initial_test.c
 * Creation Date : 31-03-2019
 * Last Modified : Sun 31 March 2019 00:07:10 PM MDT
 * Created By : Harsimransingh and Yasir Shah
