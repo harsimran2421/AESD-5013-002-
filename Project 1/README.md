@@ -13,7 +13,7 @@ Execution Steps
    - ./test to run all the unit tests for LIGHT,TEMPERATURE and CONVERSION 
 
 Note: The threshold values defining the system state as Light/dark or Cool/Hot depends upon the threshold hold values set as 0-20 Lux for Dark and less than 25C for "COOL".
-The default units for temperature is set as Celsius unless user demands otherwise, in such a case a User can change the units at compile time.
+The default units for temperature is set as Celsius.
 
 Initailly, at runtime, all the Unittests are ran,testing complete functionality for the Light sensor, Temperature sensor and Unit Conversion.Testing includes configuring, writing and reading various 
 functionality for light and temperature sensors, testing unit conversion. Once all the testing modules run successfully, the system proceeds further craeting threads for different tasks,light, temp, logging and socjet task.
