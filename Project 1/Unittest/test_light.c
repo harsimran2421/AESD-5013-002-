@@ -3,7 +3,8 @@
  * Advance Embedded System Design
  * Spring 2019
  * Definition: Test module to test various functionality for the Light sensor.Includes the following functions:
- * Functions:MY_ASSERT_NOT_EQUAL(),Test_I2C_init(),Test_Turn_on_light_sensor(),Test_Check_PowerUp(),Test_Read_Sensor_ID(),Test_Light_Sensor(),Test_Write_Interrupt(),Test_Read_Interrupt(),int Test_Status()
+ * Functions:MY_ASSERT_NOT_EQUAL(),Test_I2C_init(),Test_Turn_on_light_sensor(),Test_Check_PowerUp(),
+Test_Read_Sensor_ID(),Test_Light_Sensor(),Test_Write_Interrupt(),Test_Read_Interrupt(),int Test_Status()
  * */
 
 //Standard Header Files

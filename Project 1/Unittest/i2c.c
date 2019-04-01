@@ -7,7 +7,8 @@
  * (Temperature) and ADPS 9301(Light) sensors are used as the slave and the Beagle Bone Black acts as the 
  * master.The data is read or written to the slave as a bye or bytes or a word depending upon the slave 
  * register configuration.
- * The following file contains the following functions as: I2C_init(),write_control(),write_timing(),Temp_Conversion(),I2C_Read_Byte_Data(),I2C_Read_Word(),I2C_Write_Byte,I2C_Write_Word,I2C_Write_Bytes.
+ * The following file contains the following functions as: I2C_init(),write_control(),write_timing(),
+ * Temp_Conversion(),I2C_Read_Byte_Data(),I2C_Read_Word(),I2C_Write_Byte,I2C_Write_Word,I2C_Write_Bytes.
  *
  * */
 

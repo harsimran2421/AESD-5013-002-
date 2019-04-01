@@ -1,4 +1,23 @@
-/*APDS sensor*/
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : light.c
+* Creation Date : 20-03-2019
+* Last Modified : Wed 31 March 2019 00:09:00 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: header file to contatainging function declaration for light sensors
+* 
+* Functions:
+*           - Light_main() function is first initializes the I2C bus then calls the Read_Data function. 
+*           - Read_Data() it calculates the lux value based on channel 1 and channel 2 values depending on the datasheet
+*           - Read_Light_Sensor() it calculates the lux value based on channel 1 and channel 2 values depending on the datasheet 
+*           - Turn_on_Light_sensor() turns the sensor on
+*           - Check_PowerUp() to test if it successfully powers up the sensor
+*           - light_function() light pthread spawned calls this function
+*           - light_handler() light timer handler which logs the light value periodically by addding new light value to the temp queue.
+*           - light_test() function to test the light sensor during initial startup
+* References:
+*           -https://www.broadcom.com/products/optical-sensors/ambient-light-photo-sensors/apds-9301
+*           -https://learn.sparkfun.com/tutorials/apds-9301-sensor-hookup-guide/all         
+_._._._._._._._._._._._._._._._._._._._._.*/
 //include headers
 #include<stdio.h>
 #include<stdlib.h>
