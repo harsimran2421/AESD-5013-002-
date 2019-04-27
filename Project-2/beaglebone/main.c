@@ -32,19 +32,14 @@ void main(int argc, char *argv[])
     printf("\nPlease input the log file name\n");
     exit(0);
   }
-  pthread_t light_task, temperature_task, logging_task, socket_task;
+  pthread_t logging_task;
   
   /*Mutex lock for synchronized access of logger function*/
   if(pthread_mutex_init(&logger_mutex,NULL)!= 0)
   {
     printf("\nlogger mutex creation failed\n");
   }
-  /*Mutex lock for I2C bus synchronisation*/
-  if(pthread_mutex_init(&bus_lock,NULL)!= 0)
-  {
-    printf("\nBus lock mutex creation failed\n");
 
-  }
   /*Mutex lock for heartbeat pthread_cond_timedwait call*/
   if(pthread_mutex_init(&heartbeat_mutex,NULL)!=0)
   {
@@ -58,17 +53,8 @@ void main(int argc, char *argv[])
       return PTHREAD_MUTEX_INIT_FAIL;
   }
   /*conditional variable to implement heartbeat*/
-  if(pthread_cond_init(&temp_thread_cond,NULL)!=0)
-  {
-    printf("\ntemp Condition variable creation failed\n");
-    return;
-  }
-  /*conditional variable to implement heartbeat*/
-  if(pthread_cond_init(&light_thread_cond,NULL)!=0)
-  {
-    printf("\ntemp Condition variable creation failed\n");
-    return;
-  }
+ 
+
   if(pthread_cond_init(&logger_thread_cond,NULL)!=0)
   {
     printf("\ntemp Condition variable creation failed\n");
@@ -85,27 +71,9 @@ void main(int argc, char *argv[])
   if(result == EXIT_SUCCESS)
   {
     /*create light sensor thread*/
-    if(!pthread_create(&light_task, NULL, light_function, (void *)thread_input))
-    {
-      logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\nLIGHT Thread created Successfully\nLOG level:INFO",NULL);
-    }
-    else
-    {
-      printf("LIGHT read Thread creation failed\n");
-      logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"LIGHT read Thread creation failed",NULL);
-    }
 
     /*create temperature sensor thread*/
-    if(!pthread_create (&temperature_task, NULL, temperature_function, (void*)thread_input))
-    {
-      logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\ntemperature thread created successfully\nLOG level:INFO",NULL);
-    }
-    else
-    {
-      printf("temperature Thread creation failed\n");
-      logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"temperature Thread creation failed",NULL);
-    }
-
+    
     /*create logging task thread*/
     if(!pthread_create (&logging_task, NULL, logging_thread, (void*)thread_input))
     {
@@ -118,16 +86,7 @@ void main(int argc, char *argv[])
     }
 
     /*create socket task thread*/
-    if(!pthread_create (&socket_task, NULL, socket_function, (void*)thread_input))
-    {
-      logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\nsocket thread created successfully\nLOG level:INFO",NULL);
-    }
-    else
-    {
-      printf("socket Thread creation failed\n");
-      logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"socket Thread creation failed",NULL);
-    }
-
+    
 /*create decision task thread*/
     if(!pthread_create (&decision_task, NULL, logging_thread, (void*)thread_input))
     {
@@ -151,39 +110,6 @@ void main(int argc, char *argv[])
       struct timespec ts;
       ts = timer_setup(4,4000000);
 
-      /*to check if temperature thread is alive*/
-      pthread_mutex_lock(&heartbeat_mutex);
-      return_value = pthread_cond_timedwait(&temp_thread_cond,&heartbeat_mutex,&ts);
-      pthread_mutex_unlock(&heartbeat_mutex);
-      if(return_value != 0 && exit_flag != 1)
-      {
-        intHandler(3);
-        msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
-        memset(msg->thread_name,'\0',sizeof(msg->thread_name));
-        memcpy(msg->thread_name,"MAIN",strlen("MAIN"));
-        memset(msg->level,'\0',sizeof(msg->level));
-        memcpy(msg->level,"ALERT",strlen("ALERT"));
-        msg->unit = '\0';
-        logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Temperature thread stuck",msg);
-        break;
-      }
-
-      /*to check is light thread is alive or not*/
-      pthread_mutex_lock(&heartbeat_mutex);
-      return_value = pthread_cond_timedwait(&light_thread_cond,&heartbeat_mutex,&ts);
-      pthread_mutex_unlock(&heartbeat_mutex);
-      if(return_value != 0 && exit_flag != 1)
-      {
-        intHandler(3);
-        msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
-        memset(msg->thread_name,'\0',sizeof(msg->thread_name));
-        memcpy(msg->thread_name,"MAIN",strlen("MAIN"));
-        memset(msg->level,'\0',sizeof(msg->level));
-        memcpy(msg->level,"ALERT",strlen("ALERT"));
-        msg->unit = '\0';
-        logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"light thread stuck",msg);
-        break;
-      }
       pthread_mutex_lock(&heartbeat_mutex);
       return_value = pthread_cond_timedwait(&logger_thread_cond,&heartbeat_mutex,&ts);
       pthread_mutex_unlock(&heartbeat_mutex);
@@ -202,7 +128,7 @@ void main(int argc, char *argv[])
 
 
       pthread_mutex_lock(&heartbeat_mutex);
-      return_value = pthread_cond_timedwait      (&decision_mutex_cond,&heartbeat_mutex,&ts);
+      return_value = pthread_cond_timedwait(&decision_mutex_cond,&heartbeat_mutex,&ts);
       pthread_mutex_unlock(&heartbeat_mutex);
       if(return_value != 0 && exit_flag != 1)
       {
@@ -221,8 +147,6 @@ void main(int argc, char *argv[])
 
     printf("\nREACHED HERE\n");
     /*join all the thread in completion*/
-    pthread_join(temperature_task, NULL);
-    pthread_join(light_task, NULL);
     pthread_join(logging_task,NULL);
     pthread_join(decision_task,NULL);
 
@@ -233,21 +157,9 @@ void main(int argc, char *argv[])
   {
     printf("\nheartbeat_mutex destroy: FAILED\n");
   }
-  if(pthread_mutex_destroy(&bus_lock) != 0)
-  {
-    printf("\nbus_lock destroy: FAILED\n");
-  }
   if(pthread_mutex_destroy(&logger_mutex) != 0)
   {
     printf("\nlogger_mutex destroy: FAILED\n");
-  }
-  if(pthread_cond_destroy(&temp_thread_cond)!=0)
-  {
-    printf("\ntemp_thread_cond destroy: FAILED\n");
-  }
-  if(pthread_cond_destroy(&light_thread_cond) != 0)
-  {
-    printf("\nlight_thread_cond destroy: FAILED\n");
   }
   if(pthread_cond_destroy(&decision_thread_cond) != 0)
   {

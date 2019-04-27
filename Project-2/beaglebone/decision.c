@@ -1,8 +1,7 @@
 typedef struct decision_struct_send
 {
-  char thread_name[20];
-  char level[6];
-  float sensor_value;
+  int thread_name;
+ 
   int decision;
 } dec_struct_send;
 
@@ -55,10 +54,8 @@ void *decision()
           if(input_msg->sensor_value > ALCOHOL_THRESHOLD)
           {
             dec_struct *msgA = (dec_struct *)malloc(sizeof(dec_struct));
-            memeset(msgA->thread_name,'\0',sizeof(msgA->thread_name));
-            memcpy(msgA->thread_name,"Decision High ",strlen("decision High"));
-            memset(msgA->level,'\0',sizeof(msgA->level));
-            memcpy(msgA->level,"ALERT",strlen("ALERT"));
+            memeset(msgA->thread_name,0,sizeof(msgA->thread_name));
+            memcpy(msgA->thread_name,1,strlen("decision High"));
             memset(msgA->decision,0,sizeof(msgA->decision));
             memcpy(msgA->decision,10,sizeof(msgA->decision));
             if(mq_send(decision_send,(const char *)&msgA, sizeof(msg_struct),0) == -1)
@@ -72,10 +69,8 @@ void *decision()
           else       
           {
             dec_struct *msgA = (dec_struct *)malloc(sizeof(dec_struct));
-            memeset(msgA->thread_name,'\0',sizeof(msgA->thread_name));
-            memcpy(msgA->thread_name,"Decision Low",strlen("decision Low"));
-            memset(msgA->level,'\0',sizeof(msgA->level));
-            memcpy(msgA->level,"NO-ALERT",strlen("NO-ALERT"));
+            memeset(msgA->thread_name,0,sizeof(msgA->thread_name));
+            memcpy(msgA->thread_name,1,sizeof(int));
             memset(msgA->decision,0,sizeof(msgA->decision));
             memcpy(msgA->decision,9,sizeof(msgA->decision));
             if(mq_send(decision_send,(const char *)&msgA, sizeof(msg_struct),0) == -1)
@@ -93,10 +88,8 @@ void *decision()
           if(input->sensor_value > ULTRASONIC_THRESHOLD)
           {
             dec_struct_send *msgB = (msg_struct *)malloc(sizeof(msg_struct));
-            memeset(msgB->thread_name,'\0',sizeof(msgA->thread_name));
-            memcpy(msgB->thread_name,"Decision High",strlen("decision High"));
-            memset(msgB->level,'\0',sizeof(msgB->level));
-            memcpy(msgB->level,"ALERT",strlen("ALERT"));
+            memeset(msgB->thread_name,0,sizeof(msgA->thread_name));
+            memcpy(msgB->thread_name,2,sizeof(int));
             memset(msgA->decision,0,sizeof(msgA->decision));
             memcpy(msgA->decision,20,sizeof(msgA->decision));
             
@@ -112,10 +105,8 @@ void *decision()
           else
           {
             dec_struct_send *msgB = (msg_struct *)malloc(sizeof(msg_struct));
-            memeset(msgB->thread_name,'\0',sizeof(msgA->thread_name));
-            memcpy(msgB->thread_name,"Decision Low",strlen("decision Low"));
-            memset(msgB->level,'\0',sizeof(msgB->level));
-            memcpy(msgB->level,"NO-ALERT",strlen("NO-ALERT"));
+            memeset(msgB->thread_name,0,sizeof(int));
+            memcpy(msgB->thread_name,2,sizeof(int));
             memset(msgA->decision,0,sizeof(msgA->decision));
             memcpy(msgA->decision,99,sizeof(msgA->decision));
             
