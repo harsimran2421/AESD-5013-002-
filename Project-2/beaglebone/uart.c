@@ -84,7 +84,7 @@ int termios_init(int file_descriptor, struct termios *term)
 uart_status read_from_uart(int filedes)
 {
 	int ret_val;
-	msg_struct rx_data;
+	msg_struct_uart rx_data;
 	int filedes1;
 	if(ret_val = read(filedes, &rx_data, sizeof(rx_data)) <1)
 	{

@@ -13,11 +13,8 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 /*User defined libraries*/
 #include "logger.h"
-#include "light.h"
-#include "temperature.h"
-#include "socket.h"
+#include "decision.h"
 #include "user_led.h"
-#include "intial_test.h"
 void intHandler(int dummy) 
 {
   printf("\nSIGNAL HANDLER CAUGHT\n");

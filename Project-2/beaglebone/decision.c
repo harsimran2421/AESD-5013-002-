@@ -1,15 +1,3 @@
-typedef struct decision_struct_send
-{
-  int thread_name;
- 
-  int decision;
-} dec_struct_send;
-
-typedef struct decision_struct_recv
-{
-  char thread_id[10];
-  float sensor_value;
-} dec_struct_recv;
 
 void *decision()
 {  
@@ -41,6 +29,8 @@ void *decision()
       printf("Decision Send Queue Successfully craeted");
       logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Decision Queue Creation Successfull!");
     }
+
+
     while(exit_flag != 1)
     {
       dec_struct_recv *input_msg = (dec_struct *)malloc(sizeof(dec_struct));
@@ -49,7 +39,7 @@ void *decision()
         printf("Error recieving from UART");
         logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Error Recieving from UART!");
       }
-      if(input_msg->thread_id == alcohol)
+      if(input_msg->thread_id == ALCOHOL)
       {
           if(input_msg->sensor_value > ALCOHOL_THRESHOLD)
           {
@@ -83,7 +73,7 @@ void *decision()
 
           }
       }
-      else if(input->msg->thread_id == ultrasonic_task)
+      else if(input->msg->thread_id == ULTRASONIC)
       {
           if(input->sensor_value > ULTRASONIC_THRESHOLD)
           {

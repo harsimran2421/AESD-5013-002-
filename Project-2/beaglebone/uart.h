@@ -23,7 +23,7 @@ typedef struct
 	uint32_t timestamp;
 	char ip_str[20];
 	double sensor_value;
-}msg_struct;
+}msg_struct_uart;
 
 typedef enum
 {
