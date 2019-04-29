@@ -1,0 +1,756 @@
+
+[Timestamp: 1466022841 seconds]
+Thread info: MAIN
+logging thread created successfully
+LOG level:INFO
+
+[Timestamp: 1466022841 seconds]
+Thread info: MAIN
+decision thread created successfully
+LOG level:INFO
+
+[Timestamp: 1466022841 seconds]
+Decision Queue Recv Creation Successfull!
+
+[Timestamp: 1466022867 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022868 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022869 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022870 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022871 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022872 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022873 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022874 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022875 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022876 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022877 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022878 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022879 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022880 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022881 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022882 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022883 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022884 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022885 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022886 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022887 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022888 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022889 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022890 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022891 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022892 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022893 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022894 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022895 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022896 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022897 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022897 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022898 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022899 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022900 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022901 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022902 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022903 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022904 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022905 seconds]
+Thread:Alcohol
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022906 seconds]
+Decision Thread Exit!
+
+[Timestamp: 1466022209 seconds]
+Thread info: MAIN
+logging thread created successfully
+LOG level:INFO
+
+[Timestamp: 1466022209 seconds]
+Thread info: MAIN
+decision thread created successfully
+LOG level:INFO
+
+[Timestamp: 1466022209 seconds]
+Decision Queue Recv Creation Successfull!
+
+[Timestamp: 1466022210 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022211 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022212 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022213 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022214 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022215 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022216 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022217 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022218 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022307 seconds]
+Decision Thread Exit!
+
+[Timestamp: 1466022381 seconds]
+Thread info: MAIN
+logging thread created successfully
+LOG level:INFO
+
+[Timestamp: 1466022381 seconds]
+Thread info: MAIN
+decision thread created successfully
+LOG level:INFO
+
+[Timestamp: 1466022381 seconds]
+Decision Queue Recv Creation Successfull!
+
+[Timestamp: 1466022407 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022450 seconds]
+Decision Thread Exit!
+
+[Timestamp: 1466022451 seconds]
+Thread info: MAIN
+logging thread created successfully
+LOG level:INFO
+
+[Timestamp: 1466022451 seconds]
+Thread info: MAIN
+decision thread created successfully
+LOG level:INFO
+
+[Timestamp: 1466022451 seconds]
+Decision Queue Recv Creation Successfull!
+
+[Timestamp: 1466022452 seconds]
+Thread:Ultrasonic THRESHOLD CROSSED
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022453 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022454 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022455 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022456 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022457 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022458 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022459 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022460 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022461 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022462 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022503 seconds]
+Decision Thread Exit!
+
+[Timestamp: 1466022596 seconds]
+Thread info: MAIN
+logging thread created successfully
+LOG level:INFO
+
+[Timestamp: 1466022596 seconds]
+Thread info: MAIN
+decision thread created successfully
+LOG level:INFO
+
+[Timestamp: 1466022596 seconds]
+Decision Queue Recv Creation Successfull!
+
+[Timestamp: 1466022597 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022598 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022599 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022600 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022601 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022602 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022603 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022604 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022605 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022606 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022607 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022608 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022609 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022610 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022611 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022612 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022613 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022614 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022615 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022616 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022617 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022618 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022619 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022628 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022665 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022666 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022667 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022668 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022669 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022670 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022671 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022672 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022673 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022674 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022675 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022676 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022677 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022721 seconds]
+Decision Thread Exit!
+
+[Timestamp: 1466022773 seconds]
+Thread info: MAIN
+logging thread created successfully
+LOG level:INFO
+
+[Timestamp: 1466022773 seconds]
+Thread info: MAIN
+decision thread created successfully
+LOG level:INFO
+
+[Timestamp: 1466022773 seconds]
+Decision Queue Recv Creation Successfull!
+
+[Timestamp: 1466022774 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022775 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022776 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022777 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022778 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022779 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022780 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022781 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022782 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022783 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022784 seconds]
+Thread:Alcohol THRESHOLD
+Log level:DATA
+sensor_value:2.00
+sensor_value recieved
+
+[Timestamp: 1466022785 seconds]
+Thread:Ultrasonic
+Log level:DATA
+sensor_value:1.00
+sensor_value recieved
+
+[Timestamp: 1466022811 seconds]
+Decision Thread Exit!
