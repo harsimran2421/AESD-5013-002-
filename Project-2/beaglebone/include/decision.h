@@ -3,6 +3,8 @@
 
 #include "uart.h"
 #include "logger.h"
+#include "user_led.h"
+#include "matrix.h"
 
 #define ALCOHOL 2
 #define ULTRASONIC 3

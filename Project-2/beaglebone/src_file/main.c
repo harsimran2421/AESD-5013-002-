@@ -25,11 +25,11 @@ void intHandler(int dummy)
 void main(int argc, char *argv[])
 {
   signal(SIGINT, intHandler);
-  if(argc < 2)
-  {
-    printf("\nPlease input the log file name\n");
-    exit(0);
-  }
+//  if(argc < 2)
+//  {
+//    printf("\nPlease input the log file name\n");
+//    exit(0);
+//  }
   pthread_t decision_task,logging_task;
   
   /*Mutex lock for synchronized access of logger function*/
@@ -60,7 +60,7 @@ void main(int argc, char *argv[])
     return;
   }
   thread_struct *thread_input = (thread_struct *)malloc(sizeof(struct thread_content));
-  thread_input->log_file = argv[1];
+  thread_input->log_file = "harry.log";
    /*create logging task thread*/
     if(!pthread_create (&logging_task, NULL, logging_thread, (void*)thread_input))
     {
@@ -122,7 +122,7 @@ void main(int argc, char *argv[])
     printf("\nREACHED HERE\n");
     /*join all the thread in completion*/
     pthread_join(logging_task,NULL);
-    pthread_join(decision_task,NULL);
+//    pthread_join(decision_task,NULL);
 
   printf("\nDestroy all\n");
   if(pthread_mutex_destroy(&heartbeat_mutex)!=0)

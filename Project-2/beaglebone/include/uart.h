@@ -12,6 +12,8 @@
 #include <sys/types.h>
 #include <string.h>
 #include <errno.h>
+#include "user_led.h"
+#include "uart.h"
 
 #define PORT1_PATH	"/dev/ttyO1"
 #define PORT2_PATH	"/dev/ttyO2"

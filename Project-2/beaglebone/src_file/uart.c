@@ -79,6 +79,7 @@ uart_status write_to_uart(int filedes,uint8_t value)
 
 uart_status read_from_uart(int *filedes,msg_struct *rx_data)
 {
+	static int ultra_on_flag, alco_on_flag;
 	int ret_val;
 	int filedes1;
 	static uint8_t ultra, alco;
@@ -91,42 +92,66 @@ uart_status read_from_uart(int *filedes,msg_struct *rx_data)
 	else
 	{
 		if(rx_data->thread_id == 2)
-		{
-			ultra = ultra ^ 1;
+		{	
+			alco_on_flag = 1;
+			led_control(RED,OFF);
 			printf("\nalcohol task \t sensor value = %f\n", rx_data->sensor_value);
-			write_to_uart(*filedes,ultra);
+      			if(rx_data->sensor_value > 10)
+        			alco = 6;
+      			else
+        			alco = 5;
+			write_to_uart(*filedes,alco);
 		}		
 		else if(rx_data->thread_id == 3)
 		{
-			alco = alco ^ 5;
+			ultra_on_flag = 1;
+			if(ultra_on_flag == 1 && alco_on_flag == 1)
+			{
+				printnumber(1);
+			}
+			led_control(RED,OFF);
+      			if(rx_data->sensor_value < 10)
+        			ultra = 1;
+      			else
+        			ultra = 0;
 			printf("\nultrasonic task \t sensor value = %f\n", rx_data->sensor_value);	
-			write_to_uart(*filedes,alco);
+			write_to_uart(*filedes,ultra);
 		}
 		else if(rx_data->thread_id == 4)
 		{
-			alco = alco ^ 5;
+			alco_on_flag = 0;
+			printnumber(2);
+			led_control(RED,OFF);
+			alco = 5;
 			printf("\alcohol sensor disconnected\n");	
 			write_to_uart(*filedes,alco);
 		}
 		else if(rx_data->thread_id == 5)
 		{
-			ultra = ultra ^ 1;
+			ultra_on_flag = 0;
+			printnumber(2);
+			if(ultra_on_flag ==0 && alco_on_flag == 0)
+			{
+				printnumber(3);
+			}
+			led_control(RED,OFF);
+			ultra = 0;
 			printf("\nultrasonic sensor disconnected\n");	
 			write_to_uart(*filedes,alco);
 		}
 		else
 		{
+			printnumber(4);
+			led_control(RED,ON);
 			static int addition;
 			addition = addition + 50;
 			addition = addition % 500;
-			printf("\nincorrect value %d\n",addition);
+			printf("\nuart disconnected\n");
 			write_to_uart(*filedes,3);
 			usleep(100);
 			int ret_val = uart_init(PORT1,filedes);
 			struct termios terminal_var;
-			printf("ret_val for uart_init = %d", ret_val);
 			ret_val = termios_init(*filedes,&terminal_var);
-			printf("ret_val for terminos_init = %d", ret_val);
 		}
 		return SUCCESS;
 	}

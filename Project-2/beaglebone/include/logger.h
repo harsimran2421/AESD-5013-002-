@@ -49,7 +49,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 //#include "user_led.h"
 #include "uart.h"
 #include "logger.h"
-
+#include "matrix.h"
 
 #ifndef DEBUG
 #define perror(...) 

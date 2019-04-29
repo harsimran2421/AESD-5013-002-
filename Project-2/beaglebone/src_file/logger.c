@@ -48,32 +48,34 @@ void *logging_thread(void *arg)
       logging_function(getppid(),getpid(),syscall(SYS_gettid),logging_thread->log_file,"sensor_value recieved",msg);
     }
   }
+  pthread_exit(NULL);
 }
 
 void logging_function(int parent_id, int pthread_id, int thread_id, char *file_name,char* ip_str,msg_struct *msg)
 {
   pthread_mutex_lock(&logger_mutex); 
   FILE *file_ptr = fopen(file_name,"a");
-  struct timeval curr_time;
-  gettimeofday(&curr_time, NULL);
-  fprintf(file_ptr,"\n[Timestamp: %ld seconds]\n",(curr_time.tv_sec));
+  time_t T= time(NULL);
+  struct  tm tm = *localtime(&T);
+  fprintf(file_ptr,"\nSystem Date is: %02d/%02d/%04d\n",tm.tm_mday, tm.tm_mon+1, tm.tm_year+1900);
+  fprintf(file_ptr,"System Time is: %02d:%02d:%02d\n",tm.tm_hour, tm.tm_min, tm.tm_sec);
   if(msg != NULL)
   {
     if(msg->thread_id == 3)
     {
-      if(msg->sensor_value == 1)
-      fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Ultrasonic","DATA",msg->sensor_value);
-      else
-      fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Ultrasonic THRESHOLD CROSSED","DATA",msg->sensor_value);
-      //fprintf(file_ptr,"Thread:%s\nLog level:%s\n",msg,msg->level,msg->sensor_value,msg->unit);
+      	fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Ultrasonic","DATA",msg->sensor_value);
+    }
+    else if(msg->thread_id == 9)
+    {
+    	fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Ultrasonic THRESHOLD CROSSED","DATA",msg->sensor_value);
+    }
+    else if(msg->thread_id == 8)
+    {
+    	  fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Alcohol","DATA",msg->sensor_value);
     }
     else if(msg->thread_id == 2)
     {
-      if(msg->sensor_value == 1)
-      fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Alcohol","DATA",msg->sensor_value);
-      else
-      fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Alcohol THRESHOLD","DATA",msg->sensor_value);
-      //fprintf(file_ptr,"Thread:%s\nLog level:%s\n",msg,msg->level,msg->sensor_value,msg->unit);
+      	 fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Alcohol THRESHOLD","DATA",msg->sensor_value);
     }
   }
   fprintf(file_ptr,"%s\n",ip_str);

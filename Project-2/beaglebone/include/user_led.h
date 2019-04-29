@@ -15,11 +15,15 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 /*standard libraries*/
 #include <stdio.h>
 #include <stdlib.h>
+#include "matrix.h"
 
 /*Macros to select leds*/
 #define BLUE  1
 #define RED   2
 #define GREEN 3
+#define DATA  4     
+#define CLOCK 5     
+#define LOAD  6      
 
 /*Macros for led status*/
 #define ON  1

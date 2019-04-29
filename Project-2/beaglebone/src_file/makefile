@@ -1,7 +1,8 @@
 include sources.mk
 
 FLAGS += $(addprefix -I,$(INCLUDE_H))
-OBJ = main.c logger.c uart.c decision.c
+
+OBJ = main.c logger.c uart.c decision.c user_led.c matrix.c 
 
 all:
 	rm -rf main uart-main harry.log
