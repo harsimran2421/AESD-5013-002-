@@ -77,6 +77,14 @@ void logging_function(int parent_id, int pthread_id, int thread_id, char *file_n
     {
       	 fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Alcohol THRESHOLD","DATA",msg->sensor_value);
     }
+    else if(msg->thread_id == 10)
+    {
+      	 fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","temperature","DATA",msg->sensor_value);
+    }
+    else if(msg->thread_id == 11)
+    {
+      	 fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Temperature THRESHOLD","DATA",msg->sensor_value);
+    }
   }
   fprintf(file_ptr,"%s\n",ip_str);
   fflush(file_ptr);
