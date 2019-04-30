@@ -16,7 +16,6 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 /*userdefined library*/
 #include "uart.h"
 
-<<<<<<< HEAD
 /* -------------------------------*/
 /**
  * @Synopsis is a uart initailization function
@@ -27,10 +26,8 @@ _._._._._._._._._._._._._._._._._._._._._.*/
  * @Returns void pointer is returned
  */
 /* ---------------------------------*/
-=======
 static int ultra_on_flag = 1, alco_on_flag = 1, temp_on_flag = 1;
 
->>>>>>> 242653d7b9de5f9321ad8670fd6c200c86687a7f
 uart_status uart_init(port_number port_no,int *file_descriptor)
 {
 	char *uart_path = NULL;

@@ -13,7 +13,6 @@
 * References:https://github.com/harsimran2421/Rtes_Final_Project/tree/master/led_mat
 _._._._._._._._._._._._._._._._._._._._._.*/
 
-#ifndef MATRIX_H
 
 /*user libraries*/
 #include "matrix.h"
