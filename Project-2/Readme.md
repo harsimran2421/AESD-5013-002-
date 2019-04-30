@@ -1,5 +1,5 @@
 Execution steps for BBG code
-  - cd Project-2/src_file/
+  - cd Project-2/beaglebone/src_file/
   - make
   - ./gpio.sh(to export the gpio pins used in main code)
   - ./uart-main
