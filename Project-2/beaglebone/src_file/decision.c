@@ -37,7 +37,6 @@ void *decision(void *arg)
 
   ret_val = termios_init(file_descriptor,&terminal_var);
   printf("ret_val for terminos_init = %d", ret_val);
-  //    sleep(1);
   struct mq_attr dec_attribute1;
   dec_attribute1.mq_maxmsg = 10;
   dec_attribute1.mq_maxmsg = sizeof(msg_struct);
@@ -112,6 +111,32 @@ while(exit_flag != 1)
     }
 	decision_flag = 1;
   }
+  else if(input_msg.thread_id == TEMPERATURE)
+  {
+    led_control(BLUE,OFF);
+    if(input_msg.sensor_value > TEMPERATURE_THRESHOLD)
+    {
+      send_value.sensor_value = input_msg.sensor_value;
+      send_value.thread_id = 11;
+      if(mq_send(decision_recieve,(const char *)&send_value, sizeof(msg_struct),0) == -1)
+      {
+        printf("\nERROR: Sending Decision ultrasonic\n");
+        logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Error! Sending Decision temperature",temp_msg);
+      }
+    }
+    else       
+    {
+      send_value.sensor_value = input_msg.sensor_value;
+      send_value.thread_id = 10;
+      if(mq_send(decision_recieve,(const char *)&send_value, sizeof(msg_struct),0) == -1)
+      {
+        printf("\nERROR: Sending Decision ultrasonic\n");
+        logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Error! Sending Decision temperature",temp_msg);
+      }
+    }
+	decision_flag = 1;
+  }
+
   else if(input_msg.thread_id == 4)
   {
     led_control(GREEN,ON);
@@ -132,7 +157,6 @@ while(exit_flag != 1)
 	  logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"UART connection disconnected",temp_msg);
   }
 }
-//usleep(15000);
 logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Decision Thread Exit!",temp_msg);
 pthread_exit(NULL);
 }

@@ -22,6 +22,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 /*macros*/
 #define ALCOHOL 2
 #define ULTRASONIC 3
+<<<<<<< HEAD
 #define ALCOHOL_THRESHOLD 100
 #define ULTRASONIC_THRESHOLD 10
 
@@ -35,6 +36,13 @@ _._._._._._._._._._._._._._._._._._._._._.*/
  * @Returns void pointer is returned
  */
 /* ---------------------------------*/
+=======
+#define TEMPERATURE 10
+
+#define ALCOHOL_THRESHOLD 100
+#define ULTRASONIC_THRESHOLD 10
+#define TEMPERATURE_THRESHOLD 30
+>>>>>>> 242653d7b9de5f9321ad8670fd6c200c86687a7f
 void *decision(void *arg);
 
 #endif

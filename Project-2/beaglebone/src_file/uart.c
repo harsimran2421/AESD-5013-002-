@@ -16,6 +16,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 /*userdefined library*/
 #include "uart.h"
 
+<<<<<<< HEAD
 /* -------------------------------*/
 /**
  * @Synopsis is a uart initailization function
@@ -26,6 +27,10 @@ _._._._._._._._._._._._._._._._._._._._._.*/
  * @Returns void pointer is returned
  */
 /* ---------------------------------*/
+=======
+static int ultra_on_flag = 1, alco_on_flag = 1, temp_on_flag = 1;
+
+>>>>>>> 242653d7b9de5f9321ad8670fd6c200c86687a7f
 uart_status uart_init(port_number port_no,int *file_descriptor)
 {
 	char *uart_path = NULL;
@@ -130,10 +135,9 @@ uart_status write_to_uart(int filedes,uint8_t value)
 /* ---------------------------------*/
 uart_status read_from_uart(int *filedes,msg_struct *rx_data)
 {
-	static int ultra_on_flag, alco_on_flag;
 	int ret_val;
 	int filedes1;
-	static uint8_t ultra, alco;
+	static uint8_t ultra, alco, temperature;
 	if(ret_val = read(*filedes, rx_data, sizeof(msg_struct)) <1)
 	{
 		perror("Error Reading data\n");
@@ -146,6 +150,16 @@ uart_status read_from_uart(int *filedes,msg_struct *rx_data)
 		{	
 			alco_on_flag = 1;
 			led_control(RED,OFF);
+			if(ultra_on_flag == 0)
+			{
+				int ret_val = uart_init(PORT1,filedes);
+				struct termios terminal_var;
+				ret_val = termios_init(*filedes,&terminal_var);
+				//write_to_uart(*filedes,alco);
+				//usleep(100);
+				//return;
+				
+			}
 			printf("\nalcohol task \t sensor value = %f\n", rx_data->sensor_value);
       			if(rx_data->sensor_value > 10)
         			alco = 6;
@@ -160,6 +174,15 @@ uart_status read_from_uart(int *filedes,msg_struct *rx_data)
 			{
 				printnumber(1);
 			}
+			if(alco_on_flag == 0)
+			{
+				int ret_val = uart_init(PORT1,filedes);
+				struct termios terminal_var;
+				ret_val = termios_init(*filedes,&terminal_var);
+				//write_to_uart(*filedes,ultra);
+				//usleep(100);
+				//return;
+			}
 			led_control(RED,OFF);
       			if(rx_data->sensor_value < 10)
         			ultra = 1;
@@ -172,6 +195,10 @@ uart_status read_from_uart(int *filedes,msg_struct *rx_data)
 		{
 			alco_on_flag = 0;
 			printnumber(2);
+			if(ultra_on_flag ==0 && alco_on_flag == 0)
+			{
+				printnumber(3);
+			}
 			led_control(RED,OFF);
 			alco = 5;
 			printf("\alcohol sensor disconnected\n");	
@@ -190,16 +217,37 @@ uart_status read_from_uart(int *filedes,msg_struct *rx_data)
 			printf("\nultrasonic sensor disconnected\n");	
 			write_to_uart(*filedes,alco);
 		}
+/*		else if(rx_data->thread_id == 10)
+		{
+			temp_on_flag = 1;
+			if(temp_on_flag == 1 && ultra_on_flag == 1 && alco_on_flag == 1)
+			{
+				printnumber(1);
+			}
+			if(alco_on_flag == 0 || ultra_on_flag == 0)
+			{
+				//int ret_val = uart_init(PORT1,filedes);
+				//struct termios terminal_var;
+				//ret_val = termios_init(*filedes,&terminal_var);
+				write_to_uart(*filedes,temperature);
+				usleep(100);
+				return;
+			}
+			led_control(RED,OFF);
+      			if(rx_data->sensor_value < 30)
+        			temperature = 11;
+      			else
+        			temperature = 10;
+			printf("\ntemperature task \t sensor value = %f\n", rx_data->sensor_value);	
+			write_to_uart(*filedes,temperature);
+		}
+*/
 		else
 		{
 			printnumber(4);
 			led_control(RED,ON);
-			static int addition;
-			addition = addition + 50;
-			addition = addition % 500;
 			printf("\nuart disconnected\n");
 			write_to_uart(*filedes,3);
-			usleep(100);
 			int ret_val = uart_init(PORT1,filedes);
 			struct termios terminal_var;
 			ret_val = termios_init(*filedes,&terminal_var);
