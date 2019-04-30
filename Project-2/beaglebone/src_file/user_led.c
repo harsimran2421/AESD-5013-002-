@@ -1,5 +1,25 @@
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : user_led.c
+* Creation Date :28-04-2019
+* Last Modified : Sun 28 April 2019 20:10:11 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: header file to control on board leds
+* Functions:
+*           led_control() to turn on board leds on or off based on the inputs
+* References:
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+/*user libraries*/
 #include "user_led.h"
 
+/* -------------------------------*/
+/**
+ * @Synopsis function to control the on board leds. Pin 53,54 and 55 are used. 
+ *
+ * @Param led_color to select the led number
+ * @Param status to take input from user to turn led on or off
+ */
+/* ---------------------------------*/
 void led_control(int led_color, int status)
 {
 	FILE* file_ptr;

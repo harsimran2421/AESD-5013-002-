@@ -54,7 +54,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 #ifndef DEBUG
 #define perror(...) 
 #endif
-
+/*pthread mutex and attributes*/
 pthread_mutex_t  heartbeat_mutex, logger_mutex, decision_mutex;
 pthread_cond_t   logger_thread_cond, decision_mutex_cond;
 int exit_flag;

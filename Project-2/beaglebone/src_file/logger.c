@@ -1,7 +1,23 @@
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : logger.c
+* Creation Date : 19-03-2019
+* Last Modified : Sun 31 March 2019 00:10:11 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: header file for logger function declaration and structure declarations
+* 
+* Functions:
+*           logging_thread() linked to logger pthread task
+*           logging_function() to log messages in a common log file
+*           timer_setup() to set timer attributes for heartbeat
+* References:
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+/*standard headers*/
 #include "logger.h"
 
 mqd_t decision_discriptor; 
 
+/*strcuture to timestamp values*/
 struct timespec timer_setup(uint32_t second_value, uint32_t nanosec_value)
 {
   struct timespec ts;
@@ -16,6 +32,15 @@ struct timespec timer_setup(uint32_t second_value, uint32_t nanosec_value)
   return ts;
 }
 
+/* -------------------------------*/
+/**
+ * @Synopsis linked to logger pthread task used for synchronized logging
+ *
+ * @Param arg to pass arguement to pthread 
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
 void *logging_thread(void *arg)
 {
   thread_struct *logging_thread = (thread_struct *)arg;

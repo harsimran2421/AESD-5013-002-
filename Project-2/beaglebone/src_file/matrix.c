@@ -1,5 +1,24 @@
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : matrix.h
+* Creation Date :28-04-2019
+* Last Modified : Sun 28 April 2019 20:10:11 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: matrix file for interfacing LED Matrix function declaration and structure declarations
+* 
+* Functions:
+*           static void Send16bits () this function is used to write all the individual pixels 
+*           static void MAX7219() Send is send function to write anything to the LED Matrix 
+* 	    void setup_led() this function is used to initailly set up the ledmatrix
+*           void printnumber() thisfunction is used to print number on the led matrix 
+* References:
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+#ifndef MATRIX_H
+
+/*user libraries*/
 #include "matrix.h"
 
+/*global variable*/
 unsigned char disp1[11][8]={
   {0x3C,0x42,0x42,0x42,0x42,0x42,0x42,0x3C},//0
   {0x10,0x30,0x50,0x10,0x10,0x10,0x10,0x10},//1
@@ -14,7 +33,16 @@ unsigned char disp1[11][8]={
   {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00},//9
 };
 
-
+/* -------------------------------*/
+/**
+ * @Synopsis this function is used to write all the individual pixels 
+ *
+ * @Param OUTPUT is a variable to carry out the output value from the function
+ * 
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
 static void Send16bits (unsigned short output)
 {
 
@@ -38,7 +66,16 @@ static void Send16bits (unsigned short output)
 }
 
 
-
+/* -------------------------------*/
+/**
+ * @Synopsis this function is send function to write anything to the LED Matrix  
+ *
+ * @Param reg_number is the configuration input
+ * @Param dataout is value of the individual pixel to be written
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
 static void MAX7219Send (unsigned char reg_number, unsigned char dataout)
 {
   led_control(LOAD, 1);  // set LOAD 1 to start
@@ -48,6 +85,13 @@ static void MAX7219Send (unsigned char reg_number, unsigned char dataout)
 }
 
 
+/* -------------------------------*/
+/**
+ * @Synopsis this function is used to initailly set up the ledmatrix
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
 void setup_led()
 {
   MAX7219Send(0x09, 0x00);
@@ -57,6 +101,15 @@ void setup_led()
   MAX7219Send(0x0f, 0x00);
 }
 
+/* -------------------------------*/
+/**
+ * @Synopsis this function is used to print number on the led matrix 
+ *
+ * @Param OUTPUT is 
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
 void printnumber(int i)
 {
   int j;
