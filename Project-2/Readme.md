@@ -5,6 +5,7 @@ Execution steps for BBG code
   - ./uart-main
 
 Execution steps for Freertos
+use FINAL_CODE_FREERTOS.zip folder for execution
   - import CCS project
   - build
   - debug

@@ -1,0 +1,1813 @@
+/*
+ * prj2_gpio.c
+ *
+ *  Created on: Apr 21, 2019
+ *      Author: harsi
+ */
+#include <include/prj2_gpio.h>
+
+void GPIO_Init()
+{
+
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
+
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
+    while (!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOC))
+    {
+    }
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOL);
+    while (!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOL))
+        ;
+
+    /*The PC6 pin is set as trigger pin*/
+    GPIOPinTypeGPIOOutput(GPIO_PORTC_BASE, GPIO_PIN_6);
+    GPIOPinTypeGPIOOutput(GPIO_PORTL_BASE, GPIO_PIN_2);
+    GPIOPinTypeGPIOOutput(GPIO_PORTL_BASE, GPIO_PIN_1);
+    GPIOPadConfigSet(GPIO_PORTL_BASE, GPIO_PIN_1,
+                     GPIO_STRENGTH_12MA, GPIO_PIN_TYPE_STD);
+    /*the PL3 is set as analog input for the ultrasonic sensor echo pin*/
+    GPIOPinTypeGPIOInput(GPIO_PORTL_BASE, GPIO_PIN_3);
+
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+    GPIOPinTypeADC(GPIO_PORTE_BASE, GPIO_PIN_3);
+}
+
+
+/*
+ * prj2_gpio.h
+ *
+ *  Created on: Apr 21, 2019
+ *      Author: harsi
+ */
+
+#ifndef INCLUDE_PRJ2_GPIO_H_
+#define INCLUDE_PRJ2_GPIO_H_
+
+#include <include/FreeRTOSConfig.h>
+#include <include/harry_i2c.h>
+#include <include/main.h>
+#include <include/threads.h>
+#include <include/prj2_gpio.h>
+
+/*standard libraries*/
+#include <stdint.h>
+#include <stdbool.h>
+#include "drivers/pinout.h"
+#include "utils/uartstdio.h"
+
+
+// TivaWare includes
+#include "driverlib/sysctl.h"
+#include "driverlib/debug.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
+#include "inc/hw_ints.h"
+#include "driverlib/interrupt.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/gpio.h"
+
+
+/* -------------------------------*/
+/**
+ * @Synopsis enable and intialize the gpio ports and pins
+ */
+/* ---------------------------------*/
+void GPIO_Init();
+
+
+#endif /* INCLUDE_PRJ2_GPIO_H_ */
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : decision.c
+* Creation Date :28-04-2019
+* Last Modified : Sun 28 April 2019 20:10:11 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: decision file for decision function declaration and structure declarations
+* 
+* Functions:
+*           decision() function to set decisio flags based on incoming sensor values
+* References:
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+/*user libraries*/
+#include "uart.h"
+#include "decision.h"
+#include "logger.h"
+#include "user_led.h"
+
+/* -------------------------------*/
+/**
+ * @Synopsis decision task to set the decision flags for different sensors and communciate back the 
+ * flag values to the Remote node using UART
+ *
+ * @Param arg to pass arguement to pthread 
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+void *decision(void *arg)
+{
+  thread_struct *thread_input = (thread_struct *)arg; 
+  int file_descriptor = 0;
+  int decision_recieve;
+  int ret_val = uart_init(PORT1,&file_descriptor);
+  struct termios terminal_var;
+  printf("ret_val for uart_init = %d", ret_val);
+
+  ret_val = termios_init(file_descriptor,&terminal_var);
+  printf("ret_val for terminos_init = %d", ret_val);
+  struct mq_attr dec_attribute1;
+  dec_attribute1.mq_maxmsg = 10;
+  dec_attribute1.mq_maxmsg = sizeof(msg_struct);
+  decision_recieve = mq_open("/decision_queue",O_RDWR | O_CREAT, 0666, &dec_attribute1);
+  msg_struct *temp_msg = (msg_struct *)malloc(sizeof(msg_struct));
+  temp_msg->thread_id = 0;
+  temp_msg->sensor_value = 0; 
+  setup_led();
+if(decision_recieve < 0)
+{
+  printf("Decision Recv Queue Error!");
+  logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Decision Queue Recv Creation Failed!",temp_msg);
+}
+else 
+{
+  printf("Decision Recv Queue Successfully craeted");
+  logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Decision Queue Recv Creation Successfull!",temp_msg);
+}
+msg_struct input_msg;
+msg_struct send_value;
+while(exit_flag != 1)
+{
+  sleep(1);  
+  read_from_uart(&file_descriptor,&input_msg);
+  if(input_msg.thread_id == ALCOHOL)
+  {
+    led_control(GREEN,OFF);
+    if(input_msg.sensor_value > ALCOHOL_THRESHOLD)
+    {
+      send_value.sensor_value = input_msg.sensor_value;
+      send_value.thread_id = 2;
+      if(mq_send(decision_recieve,(const char *)&send_value, sizeof(msg_struct),0) == -1)
+      {
+        printf("\nERROR: Sending Decision Alcohol\n");
+        logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Error! Sending Decision Alcohol",temp_msg);
+      }
+    }
+    else       
+    {
+      send_value.sensor_value = input_msg.sensor_value;
+      send_value.thread_id = 8;
+      if(mq_send(decision_recieve,(const char *)&send_value, sizeof(msg_struct),0) == -1)
+      {
+        printf("\nERROR: Sending Decision Alcohol\n");
+        logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Error! Sending Decision Alcohol",temp_msg);
+      }
+    }
+	decision_flag = 1;
+  }
+  else if(input_msg.thread_id == ULTRASONIC)
+  {
+    led_control(BLUE,OFF);
+    if(input_msg.sensor_value < ULTRASONIC_THRESHOLD)
+    {
+      send_value.sensor_value = input_msg.sensor_value;
+      send_value.thread_id = 3;
+      if(mq_send(decision_recieve,(const char *)&send_value, sizeof(msg_struct),0) == -1)
+      {
+        printf("\nERROR: Sending Decision ultrasonic\n");
+        logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Error! Sending Decision ultrasonic",temp_msg);
+      }
+    }
+    else       
+    {
+      send_value.sensor_value = input_msg.sensor_value;
+      send_value.thread_id = 9;
+      if(mq_send(decision_recieve,(const char *)&send_value, sizeof(msg_struct),0) == -1)
+      {
+        printf("\nERROR: Sending Decision ultrasonic\n");
+        logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Error! Sending Decision ultrasonic",temp_msg);
+      }
+    }
+	decision_flag = 1;
+  }
+  else if(input_msg.thread_id == TEMPERATURE)
+  {
+    led_control(BLUE,OFF);
+    if(input_msg.sensor_value > TEMPERATURE_THRESHOLD)
+    {
+      send_value.sensor_value = input_msg.sensor_value;
+      send_value.thread_id = 11;
+      if(mq_send(decision_recieve,(const char *)&send_value, sizeof(msg_struct),0) == -1)
+      {
+        printf("\nERROR: Sending Decision ultrasonic\n");
+        logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Error! Sending Decision temperature",temp_msg);
+      }
+    }
+    else       
+    {
+      send_value.sensor_value = input_msg.sensor_value;
+      send_value.thread_id = 10;
+      if(mq_send(decision_recieve,(const char *)&send_value, sizeof(msg_struct),0) == -1)
+      {
+        printf("\nERROR: Sending Decision ultrasonic\n");
+        logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Error! Sending Decision temperature",temp_msg);
+      }
+    }
+	decision_flag = 1;
+  }
+
+  else if(input_msg.thread_id == 4)
+  {
+    led_control(GREEN,ON);
+	  send_value.sensor_value = input_msg.sensor_value;
+	  send_value.thread_id = 2;
+
+	  logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Alcohol sensor disconnected",temp_msg);
+  }
+  else if(input_msg.thread_id == 5)
+  {
+    led_control(BLUE,ON);
+	  send_value.sensor_value = input_msg.sensor_value;
+	  send_value.thread_id = 3;
+	  logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Ultrasonic sensor disconnected",temp_msg);
+  }
+  else
+  { 
+	  logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"UART connection disconnected",temp_msg);
+  }
+}
+logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Decision Thread Exit!",temp_msg);
+pthread_exit(NULL);
+}
+
+
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : logger.h
+* Creation Date : 19-03-2019
+* Last Modified : Sun 31 March 2019 00:10:11 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: header file for logger function declaration and structure declarations
+* 
+* Functions:
+*           logging_thread() linked to logger pthread task
+*           logging_function() to log messages in a common log file
+*           timer_setup() to set timer attributes for heartbeat
+* References:
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+#ifndef _LOGGER_H
+#define _LOGGER_H
+
+/*standard headers*/
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h> 
+#include <errno.h>
+
+/*system headers*/
+#include <signal.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/syscall.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+
+/*POSIX thread*/
+#include <pthread.h>  
+
+/*IPC headers*/
+#include <netinet/in.h> 
+#include <mqueue.h>
+#include <netdb.h>
+
+/*I2C headers*/
+#include <linux/i2c-dev.h>
+#include <sys/ioctl.h>
+
+/*user libraries*/
+//#include "user_led.h"
+#include "uart.h"
+#include "logger.h"
+#include "matrix.h"
+
+#ifndef DEBUG
+#define perror(...) 
+#endif
+/*pthread mutex and attributes*/
+pthread_mutex_t  heartbeat_mutex, logger_mutex, decision_mutex;
+pthread_cond_t   logger_thread_cond, decision_mutex_cond;
+int exit_flag;
+int decision_flag;
+
+/*structure to store thread attributes*/
+typedef struct thread_content{
+
+    pthread_t tid;         // the thread identifier
+    char* log_file;
+
+}thread_struct;
+
+/* -------------------------------*/
+/**
+ * @Synopsis linked to logger pthread task used for synchronized logging
+ *
+ * @Param arg to pass arguement to pthread 
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+void *logging_thread(void *arg);
+
+/* -------------------------------*/
+/**
+ * @Synopsis to log recieved message to a common file
+ *
+ * @Param parent_id - get parent ID process
+ * @Param pthread_id - ID of the pthread sending the message
+ * @Param thread_id - thread ID of the logging message
+ * @Param file_name - file where the message should be logged
+ * @Param ip_str  - user message
+ * @Param msg - msg structure containing data
+ */
+/* ---------------------------------*/
+void logging_function(int parent_id, int pthread_id, int thread_id, char *file_name,char* ip_str,msg_struct *msg);
+
+
+/* -------------------------------*/
+/**
+ * @Synopsis to setup the heartbeat timer attrbutes
+ *
+ * @Param second_value - seconds interval value
+ * @Param nanosec_value - nanosec interval value
+ *
+ * @Returns the timerspec struct with the required attributes set
+ */
+/* ---------------------------------*/
+struct timespec timer_setup(uint32_t second_value, uint32_t nanosec_value);
+
+#endif
+/*
+ * prj2_uart.h
+ *
+ *  Created on: Apr 21, 2019
+ *      Author: harsi
+ */
+
+#ifndef INCLUDE_PRJ2_UART_H_
+#define INCLUDE_PRJ2_UART_H_
+
+/*user defined libraries*/
+#include <include/FreeRTOSConfig.h>
+#include <include/harry_i2c.h>
+#include <include/main.h>
+#include <include/threads.h>
+#include <include/prj2_gpio.h>
+
+/*standard libraries*/
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include "drivers/pinout.h"
+#include "utils/uartstdio.h"
+
+
+// TivaWare includes
+#include "driverlib/sysctl.h"
+#include "driverlib/debug.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
+#include "driverlib/timer.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_ints.h"
+#include "driverlib/interrupt.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/gpio.h"
+#include "driverlib/uart.h"
+#include "driverlib/i2c.h"
+#include "driverlib/adc.h"
+
+
+// FreeRTOS includes
+#include "FreeRTOSConfig.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "timers.h"
+#include "semphr.h"
+
+volatile uint8_t uart_flag;
+
+uint8_t control_flag;
+
+/* -------------------------------*/
+/**
+ * @Synopsis Function to configure uart for printing data on terminal and also communicating with controller node
+ */
+/* ---------------------------------*/
+void configure_UART(void);
+
+/* -------------------------------*/
+/**
+ * @Synopsis  Recieve data from controller node
+ */
+/* ---------------------------------*/
+void UARTIntHandler(void);
+
+/* -------------------------------*/
+/**
+ * @Synopsis  SEND data to controller node
+ *
+ * @Param pui8Buffer buffer storing data to be sent
+ * @Param ui32Count number of bytes to send
+ */
+/* ---------------------------------*/
+void UARTSend(const uint8_t *pui8Buffer, uint32_t ui32Count);
+
+#endif /* INCLUDE_PRJ2_UART_H_ */
+/*
+ * threads.h
+ *
+ *  Created on: Apr 9, 2019
+ *      Author: harsi
+ */
+
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : thread.h
+* Creation Date : 21-03-2019
+* Last Modified : Wed 29 April 2019 00:20:56 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: header file to contatainging function declaration for threads created
+*
+* Functions:
+*           queue_create();
+            LEDTask();
+            LoggerTask();
+            TemperatureTask();
+            ultrasonic_sensor();
+            alcohol_sensor();
+            timerTask();
+            startup_test();
+* References:
+*
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+#ifndef INCLUDE_THREADS_H_
+#define INCLUDE_THREADS_H_
+
+#include <include/main.h>
+#include "FreeRTOS.h"
+#include "queue.h"
+#include"semphr.h"
+#include<stdint.h>
+#include "FreeRTOS.h"
+#include "task.h"
+#include "driverlib/timer.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_ints.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
+#include "driverlib/interrupt.h"
+#include "timers.h"
+#include <include/prj2_gpio.h>
+#include <include/prj2_alcohol.h>
+#include <include/prj2_uart.h>
+
+typedef struct{
+    uint8_t thread_id;
+    float sensor_value;
+}msg_struct;
+
+
+/*Semaphores used for signalling*/
+xSemaphoreHandle log_m;
+SemaphoreHandle_t led_signal;
+SemaphoreHandle_t temp_signal;
+SemaphoreHandle_t temperature_signal;
+SemaphoreHandle_t alcohol_signal;
+TaskHandle_t a_task ;
+
+/*common queue used for data passing*/
+QueueHandle_t queue_logger;
+
+/*Flag used to see if uart connection is active or not*/
+uint8_t uart_connect_flag;
+
+
+/* -------------------------------*/
+/**
+ * @Synopsis  creates a queue of size 10 to pass data between different tasks
+ *
+ * @Returns   Exit status based on success or failure
+ */
+/* ---------------------------------*/
+int queue_create();
+
+/* -------------------------------*/
+/**
+ * @Synopsis  Led task handling the output devices
+ *
+ * @Param pvParameters
+ */
+/* ---------------------------------*/
+void LEDTask(void *pvParameters);
+
+/* -------------------------------*/
+/**
+ * @Synopsis Task to log data on UART terminal
+ *
+ * @Param pvParameters
+ */
+/* ---------------------------------*/
+void LoggerTask(void *pvParameters);
+
+/* -------------------------------*/
+/**
+ * @Synopsis task to measure value from TMP102 sensor
+ *
+ * @Param pvParameters
+ */
+/* ---------------------------------*/
+void TemperatureTask(void *pvParameters);
+
+/* -------------------------------*/
+/**
+ * @Synopsis task to collect data values from ultrasonic sensor
+ *
+ * @Param pvParameters
+ */
+/* ---------------------------------*/
+void ultrasonic_sensor(void *pvParameters);
+
+/* -------------------------------*/
+/**
+ * @Synopsis task to collect data values from alcohol sensor
+ *
+ * @Param pvParameters
+ */
+/* ---------------------------------*/
+void alcohol_sensor(void *pvParameters);
+
+/* -------------------------------*/
+/**
+ * @Synopsis Timer task to signal other task to periodically collect data
+ *
+ * @Param mytimer
+ */
+/* ---------------------------------*/
+void timerTask(TimerHandle_t mytimer);
+
+/* -------------------------------*/
+/**
+ * @Synopsis function to execute start tests before creating tests
+ */
+/* ---------------------------------*/
+void startup_test();
+#endif /* INCLUDE_THREADS_H_ */
+/*
+ * threads.c
+ *
+ *  Created on: Apr 9, 2019
+ *      Author: harsi
+ *      reference: https://github.com/akobyl/TM4C129_FreeRTOS_Demo
+ *      reference
+ */
+#include <include/FreeRTOSConfig.h>
+#include <include/main.h>
+#include <include/temperature.h>
+#include <include/threads.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "drivers/pinout.h"
+#include "utils/uartstdio.h"
+
+
+/* TivaWare includes*/
+#include "driverlib/sysctl.h"
+#include "driverlib/debug.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
+#include "driverlib/timer.h"
+#include "driverlib/interrupt.h"
+
+/* FreeRTOS includes*/
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+
+int queue_create(){
+    queue_logger = xQueueCreate( 10, sizeof(msg_struct) );
+    if( queue_logger == NULL )
+       {
+           return 0;
+       }
+    return 1;
+}
+
+
+/* Flash the LEDs on the launchpad*/
+void LEDTask(void *pvParameters)
+{
+    while(1)
+    {
+        if(control_flag == 1)
+        {
+            /*when ultrasonic threshold is crossed*/
+            LEDWrite(0x01, 0x01);
+            GPIOPinWrite(GPIO_PORTL_BASE, GPIO_PIN_1, ~GPIO_PIN_1);
+        }
+
+        else if(control_flag == 6)
+        {
+           /*when alcohol sensor threshold is crossed*/
+            LEDWrite(0x02, 0x02);
+            GPIOPinWrite(GPIO_PORTL_BASE, GPIO_PIN_2, GPIO_PIN_2);
+        }
+        else if(control_flag == 5)
+        {
+          /*when alcohol sensor value is below threshold*/
+            LEDWrite(0x02, 0x00);
+            GPIOPinWrite(GPIO_PORTL_BASE, GPIO_PIN_2, ~GPIO_PIN_2);
+        }
+        else if(control_flag == 0)
+        {
+          /*when alcohol sensor value is above threshold*/
+            LEDWrite(0x01, 0x00);
+            GPIOPinWrite(GPIO_PORTL_BASE, GPIO_PIN_1, GPIO_PIN_1);
+        }
+    }
+}
+
+
+/*Write text over the Stellaris debug interface UART port*/
+void LoggerTask(void *pvParameters)
+{
+    msg_struct msg;
+    uart_flag = 1;
+    char temp[20];
+    memset(temp,'\0',20);
+    while(1)
+    {
+      /*wait till something is added to the queue*/
+                if (xQueueReceive(queue_logger, &(msg),(TickType_t ) 1) == pdTRUE)
+                {
+                    uint8_t *send_ptr = (uint8_t *)&msg;
+                    UARTSend(send_ptr,sizeof(msg));
+                    if(msg.thread_id == 3)
+                    {
+                      /*ultrasonic sensor reading logged*/
+                        UARTprintf("\n\n\rultrasonic task\nAuthor: Harry\nsensor value = %u \n\r ",(uint32_t) msg.sensor_value);
+                    }
+                    else if(msg.thread_id == 2)
+                    {
+                      /*alcohol sensor value logged*/
+                        sprintf(temp,"%f",msg.sensor_value);
+                        UARTprintf("\n\n\ralcohol task\nAuthor: Harry\nsensor value = %s \n\r ", temp);
+                    }
+                    else if(msg.thread_id == 4)
+                    {
+                      /*logging alert when alcohol sensor is disconnected*/
+                        UARTprintf("\n\n\ralcohol task\nAuthor: Harry\nAlcohol sensor Disconnected \n\r ");
+                    }
+                    if(msg.thread_id == 5)
+                    {
+                      /*logging alert when ultrasonic sensor is disconnected*/
+                        UARTprintf("\n\n\rultrasonic task\nAuthor: Harry\nUltrasonic sensor Disconnected\n\r ");
+                    }
+                }
+    }
+}
+
+
+/*Function to read ultrasonic sensor value periodically*/
+void ultrasonic_sensor(void *pvParameters)
+{
+    static uint8_t ultrasonic_disconnect_flag;
+    msg_struct msg;
+    float sensor_value;
+    while(1)
+    {
+      /*waiting on semaphore*/
+        if (xSemaphoreTake(temp_signal,portMAX_DELAY) == pdTRUE)
+        {
+          /*read sensor value*/
+            ultrasonic_sensor_read(&sensor_value);
+            msg.sensor_value = sensor_value;
+            msg.thread_id = 3;
+            if(sensor_value < 0)
+            {
+              /*log alert when sensor is disconnected*/
+               if(ultrasonic_disconnect_flag == 0)
+                {
+                    ultrasonic_disconnect_flag = 1;
+                    control_flag = 1;
+                    msg.thread_id = 5;
+                    /*add data to the queue*/
+                    if (xSemaphoreTake( log_m, ( TickType_t )20 ) == pdTRUE)
+                        ;
+                    {
+                        xQueueSend(queue_logger, (void * ) &msg, (TickType_t )1);
+                        xSemaphoreGive(log_m);
+                    }
+                }
+            }
+            else
+            {
+              /*when you recieve a valid sensor value*/
+                ultrasonic_disconnect_flag = 0;
+                if(uart_connect_flag == 0)
+                {
+                    LEDWrite(0x04, 0x04);
+                    if(msg.sensor_value < 10)
+                        control_flag = 1;
+                    else
+                        control_flag = 0;
+                }
+                else
+                    LEDWrite(0x04, 0x00);
+                /*add sensor data to queue*/
+                if (xSemaphoreTake( log_m, ( TickType_t )20 ) == pdTRUE)
+                    ;
+                {
+                    xQueueSend(queue_logger, (void * ) &msg, (TickType_t )1);
+                    xSemaphoreGive(log_m);
+                }
+            }
+       }
+    }
+}
+
+void alcohol_sensor(void *pvParameters)
+{
+    static uint8_t alcohol_disconnect_flag;
+    float clean_threshold = alcohol_sensor_config();
+    char string_content[10];
+    sprintf(string_content, "%f", clean_threshold);
+    msg_struct msg;
+    uint32_t initial_data[1];
+    float alcohol_ratio = 0.0;
+    while(1)
+    {
+      /*waiting on a semaphore*/
+        if (xSemaphoreTake(alcohol_signal,portMAX_DELAY) == pdTRUE)
+        {
+          /*read alcohol sensor value*/
+            ADCProcessorTrigger(ADC0_BASE, 3);
+
+            while (!ADCIntStatus(ADC0_BASE, 3, false));
+
+            ADCIntClear(ADC0_BASE, 3);
+
+            ADCSequenceDataGet(ADC0_BASE, 3, initial_data);
+
+            alcohol_ratio = (3.3/4096)*initial_data[0]*10;
+
+            msg.sensor_value = alcohol_ratio;
+            msg.thread_id = 2;
+            if((int)msg.sensor_value <=0)
+            {
+              /*when sensor disconnects*/
+                if(alcohol_disconnect_flag == 0)
+                {
+                    alcohol_disconnect_flag = 1;
+                    control_flag = 5;
+                    msg.thread_id = 4;
+                    /*log data to the queue*/
+                    if (xSemaphoreTake( log_m, ( TickType_t )20 ) == pdTRUE)
+                        ;
+                    {
+                        xQueueSend(queue_logger, (void * ) &msg, (TickType_t )1);
+                        xSemaphoreGive(log_m);
+                    }
+                }
+            }
+            else
+            {
+                if(uart_connect_flag == 0)
+                {
+                    LEDWrite(0x04, 0x04);
+                    if(msg.sensor_value > 10)
+                        control_flag = 6;
+                    else
+                        control_flag = 5;
+                }
+                else
+                    LEDWrite(0x04, 0x00);
+                alcohol_disconnect_flag = 0;
+                /*add sensor data to the queue*/
+                if (xSemaphoreTake( log_m, ( TickType_t )20 ) == pdTRUE)
+                    ;
+                {
+                    xQueueSend(queue_logger, (void * ) &msg, (TickType_t )1);
+                    xSemaphoreGive(log_m);
+                }
+            }
+       }
+    }
+}
+
+void TemperatureTask(void *pvParameters)
+{
+    msg_struct msg;
+    double temp_value;
+    while(1)
+    {
+        if (xSemaphoreTake(temperature_signal,portMAX_DELAY) == pdTRUE)
+        {
+          /*read sensor value*/  
+          temp_main(CELCIUS, &temp_value);
+            msg.sensor_value = temp_value;
+            msg.thread_id = 3;
+            /*add data to queue*/
+            if (xSemaphoreTake( log_m, ( TickType_t )20 ) == pdTRUE)
+                ;
+            {
+                xQueueSend(queue_logger, (void * ) &msg, (TickType_t )1);
+                xSemaphoreGive(log_m);
+            }
+        }
+    }
+}
+
+void timerTask(TimerHandle_t mytimer)
+{
+  /*periodically signal to each sensor task to read new value*/
+    static int run_count;
+    static int switch_flag;
+    run_count++;
+    if(run_count%10 == 0)
+    {
+        switch_flag = switch_flag ^ 1;
+        if(switch_flag == 1)
+        {
+            uart_connect_flag = 0;
+            xSemaphoreGive( temp_signal);
+        }
+        else
+        {
+            xSemaphoreGive( alcohol_signal);
+        }
+    }
+}
+
+/*start up test function*/
+void startup_test()
+{
+    static uint8_t ultrasonic_disconnect_flag;
+    msg_struct msg;
+    float sensor_value;
+    ultrasonic_sensor_read(&sensor_value);
+    msg.sensor_value = sensor_value;
+    msg.thread_id = 3;
+    if(sensor_value < 0)
+    {
+       if(ultrasonic_disconnect_flag == 0)
+        {
+            ultrasonic_disconnect_flag = 1;
+            control_flag = 1;
+            msg.thread_id = 5;
+        }
+    }
+    else
+    {
+        ultrasonic_disconnect_flag = 0;
+        if(uart_connect_flag == 0)
+        {
+            LEDWrite(0x04, 0x04);
+            if(msg.sensor_value < 10)
+                control_flag = 1;
+            else
+                control_flag = 0;
+        }
+        else
+            LEDWrite(0x04, 0x00);
+    }
+}
+
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : user_led.h
+* Creation Date :28-04-2019
+* Last Modified : Sun 28 April 2019 20:10:11 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: header file to control on board leds
+* Functions:
+*           led_control() to turn on board leds on or off based on the inputs
+* References:
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+#ifndef __USER_LED_H
+#define __USER_LED_H
+
+/*standard libraries*/
+#include <stdio.h>
+#include <stdlib.h>
+
+/*user libraries*/
+#include "matrix.h"
+
+/*Macros to select leds*/
+#define BLUE  1
+#define RED   2
+#define GREEN 3
+#define DATA  4     
+#define CLOCK 5     
+#define LOAD  6      
+
+/*Macros for led status*/
+#define ON  1
+#define OFF 0
+
+/* -------------------------------*/
+/**
+ * @Synopsis function to control the on board leds. Pin 53,54 and 55 are used. 
+ *
+ * @Param led_color to select the led number
+ * @Param status to take input from user to turn led on or off
+ */
+/* ---------------------------------*/
+void led_control(int led_color, int status);
+
+#endif
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : decision.h
+* Creation Date :28-04-2019
+* Last Modified : Sun 28 April 2019 20:10:11 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: decision file for decision function declaration and structure declarations
+* 
+* Functions:
+*           decision() function to set decisio flags based on incoming sensor values
+* References:
+_._._._._._._._._._._._._._._._._._._._._.*/
+#ifndef DECISION_H
+#define DECISION_H
+
+
+/*user libraries*/
+#include "uart.h"
+#include "logger.h"
+#include "user_led.h"
+#include "matrix.h"
+
+/*macros*/
+#define ALCOHOL 2
+#define ULTRASONIC 3
+#define TEMPERATURE 10
+
+#define ALCOHOL_THRESHOLD 100
+#define ULTRASONIC_THRESHOLD 10
+#define TEMPERATURE_THRESHOLD 30
+
+/* -------------------------------*/
+/**
+ * @Synopsis decision task to set the decision flags for different sensors and communciate back the 
+ * flag values to the Remote node using UART
+ *
+ * @Param arg to pass arguement to pthread 
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+void *decision(void *arg);
+
+#endif
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : uart.h
+* Creation Date :28-04-2019
+* Last Modified : Sun 28 April 2019 20:10:11 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: uart file for uart function declaration and structure declarations
+* 
+* Functions:
+*	    uart_status uart_init() is a uart initailization function
+*	    int termios_init() is a terminal setup function
+*           uart_status write_to_uart() is a function to write to uart
+*           uart_status read_from_uart() is a function to read from uart
+* References:
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+#ifndef MY_UART_H_
+#define MY_UART_H_
+
+/*Standard library*/
+#include <stdio.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <time.h>
+#include <termios.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <string.h>
+#include <errno.h>
+
+/*User library*/
+#include "user_led.h"
+#include "uart.h"
+
+/*Macros*/
+#define PORT1_PATH	"/dev/ttyO1"
+#define PORT2_PATH	"/dev/ttyO2"
+#define PORT4_PATH	"/dev/ttyO4"
+
+/*thread structure*/
+typedef struct
+{
+	uint8_t thread_id;
+	float sensor_value;
+}msg_struct;
+
+/*Port enumeration */
+typedef enum
+{
+  PORT1 = 1,
+  PORT2 = 2,
+  PORT4 = 4
+}port_number;
+
+/*error enumeration */
+typedef enum
+{
+	SEND_ERROR=-10,
+	RECEIVE_ERROR=-20,
+	INITIALIZATION_ERROR =-30,
+	SUCCESS
+}uart_status;
+
+/* -------------------------------*/
+/**
+ * @Synopsis is a uart initailization function
+ *
+ * @Param port_no is a port number varaible of port_number data type
+ * @Param file descriptor is a variableto define the file path
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+uart_status uart_init(port_number port_no, int *file_descriptor);
+/* -------------------------------*/
+/**
+ * @Synopsis is a terminal setup function 
+ * @Param file descriptor is a variable to define the file path
+ * @Param termi is a variable of termios data type
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+int termios_init(int file_descriptor, struct termios *term);
+
+/* -------------------------------*/
+/**
+ * @Synopsis is a function to write to uart 
+ *
+ * @Param filedes is a variable file decriptor 
+ * @Param value is a value to be written to uart
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+uart_status write_to_uart(int filedes, uint8_t value);
+/* -------------------------------*/
+/**
+ * @Synopsis is a function to read from uart 
+ * @Param filedes is a variable file decriptor 
+ * @Param rx_data is a value to store the read value
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+uart_status read_from_uart(int *filedes, msg_struct *rx_data);
+#endif
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : user_led.c
+* Creation Date :28-04-2019
+* Last Modified : Sun 28 April 2019 20:10:11 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: header file to control on board leds
+* Functions:
+*           led_control() to turn on board leds on or off based on the inputs
+* References:
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+/*user libraries*/
+#include "user_led.h"
+
+/* -------------------------------*/
+/**
+ * @Synopsis function to control the on board leds. Pin 53,54 and 55 are used. 
+ *
+ * @Param led_color to select the led number
+ * @Param status to take input from user to turn led on or off
+ */
+/* ---------------------------------*/
+void led_control(int led_color, int status)
+{
+	FILE* file_ptr;
+	if (status != OFF && status != ON)
+	{
+		printf("\nINCORRECT LED STATUS\n");
+	}
+  if (led_color > LOAD && led_color < BLUE)
+	{
+		printf("INCORRECT LED NUMBER\n");
+		exit(-1);
+	}
+  if(led_color == BLUE)
+  {
+			file_ptr = fopen("/sys/devices/ocp.3/gpio-leds.8/leds/beaglebone:green:usr0/brightness", "w");
+			fprintf(file_ptr,"%i",status);
+  }
+  else if(led_color == RED)
+  {
+			file_ptr = fopen("/sys/devices/ocp.3/gpio-leds.8/leds/beaglebone:green:usr1/brightness", "w");
+			fprintf(file_ptr,"%i",status);
+  }
+  else if(led_color == GREEN)
+  {
+			file_ptr = fopen("/sys/devices/ocp.3/gpio-leds.8/leds/beaglebone:green:usr2/brightness", "w");
+			fprintf(file_ptr,"%i",status);
+  }
+  else if(led_color == DATA)
+  {
+			file_ptr = fopen("/sys/class/gpio/gpio68/value", "w");
+			fprintf(file_ptr,"%i",status);
+  }
+  else if(led_color == CLOCK)
+  {
+			file_ptr = fopen("/sys/class/gpio/gpio26/value", "w");
+			fprintf(file_ptr,"%i",status);
+  }
+  else if(led_color == LOAD)
+  {
+			file_ptr = fopen("/sys/class/gpio/gpio44/value", "w");
+			fprintf(file_ptr,"%i",status);
+  }
+	fclose(file_ptr);
+}
+
+/*
+ * prj2_alcohol.h
+ *
+ *  Created on: Apr 23, 2019
+ *      Author: harsi
+ */
+
+#ifndef INCLUDE_PRJ2_ALCOHOL_H_
+#define INCLUDE_PRJ2_ALCOHOL_H_
+
+/*standard libraries*/
+#include <stdio.h>
+#include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+/*freertos includes*/
+#include "inc/hw_memmap.h"
+#include "inc/hw_ints.h"
+#include "utils/uartstdio.h"
+
+/*freertos driver libraries*/
+#include "driverlib/i2c.h"
+#include "driverlib/i2c.h"
+#include "drivers/pinout.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/debug.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
+#include "driverlib/gpio.h"
+#include "driverlib/i2c.h"
+#include "driverlib/interrupt.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/uart.h"
+#include "driverlib/adc.h"
+
+/* -------------------------------*/
+/**
+ * @Synopsis Intialize ADC port and pins for interfacing alcohol sensor
+ */
+/* ---------------------------------*/
+void ADC_Init(void);
+
+/* -------------------------------*/
+/**
+ * @Synopsis  Configure alcohol sensor
+ *
+ * @Returns   Exit status based on success
+ */
+/* ---------------------------------*/
+float alcohol_sensor_config(void);
+
+#endif /* INCLUDE_PRJ2_ALCOHOL_H_ */
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : matrix.h
+* Creation Date :28-04-2019
+* Last Modified : Sun 28 April 2019 20:10:11 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: matrix file for interfacing LED Matrix function declaration and structure declarations
+* 
+* Functions:
+*           static void Send16bits () this function is used to write all the individual pixels 
+*           static void MAX7219() Send is send function to write anything to the LED Matrix 
+* 	    void setup_led() this function is used to initailly set up the ledmatrix
+*           void printnumber() thisfunction is used to print number on the led matrix 
+* References:https://github.com/harsimran2421/Rtes_Final_Project/tree/master/led_mat
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+
+/*user libraries*/
+#include "matrix.h"
+
+/*global variable*/
+unsigned char disp1[11][8]={
+  {0x3C,0x42,0x42,0x42,0x42,0x42,0x42,0x3C},//0
+  {0x10,0x30,0x50,0x10,0x10,0x10,0x10,0x10},//1
+  {0x7E,0x2,0x2,0x7E,0x40,0x40,0x40,0x7E},//2
+  {0x3E,0x2,0x2,0x3E,0x2,0x2,0x3E,0x0},//3
+  {0x8,0x18,0x28,0x48,0xFE,0x8,0x8,0x8},//4
+  {0x3C,0x20,0x20,0x3C,0x4,0x4,0x3C,0x0},//5
+  {0x3C,0x20,0x20,0x3C,0x24,0x24,0x3C,0x0},//6
+  {0x3E,0x22,0x4,0x8,0x8,0x8,0x8,0x8},//7
+  {0x0,0x3E,0x22,0x22,0x3E,0x22,0x22,0x3E},//8
+  {0x3E,0x22,0x22,0x3E,0x2,0x2,0x2,0x3E},//9
+  {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00},//9
+};
+
+/* -------------------------------*/
+/**
+ * @Synopsis this function is used to write all the individual pixels 
+ *
+ * @Param OUTPUT is a variable to carry out the output value from the function
+ * 
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+static void Send16bits (unsigned short output)
+{
+
+  unsigned char i;
+
+  for (i=16; i>0; i--) 
+  {
+    unsigned short mask = 1 << (i - 1); // calculate bitmask
+
+    led_control(CLOCK, 0);  // set clock to 0
+
+    // Send one bit on the data pin
+
+    if (output & mask)   
+      led_control(DATA, 1);          
+    else                              
+      led_control(DATA, 0);  
+
+    led_control(CLOCK, 1);  // set clock to 1
+  }
+}
+
+
+/* -------------------------------*/
+/**
+ * @Synopsis this function is send function to write anything to the LED Matrix  
+ *
+ * @Param reg_number is the configuration input
+ * @Param dataout is value of the individual pixel to be written
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+static void MAX7219Send (unsigned char reg_number, unsigned char dataout)
+{
+  led_control(LOAD, 1);  // set LOAD 1 to start
+  Send16bits((reg_number << 8) + dataout);   // send 16 bits ( reg number + dataout )
+  led_control(LOAD, 0);  // LOAD 0 to latch
+  led_control(LOAD, 1);  // set LOAD 1 to finish
+}
+
+
+/* -------------------------------*/
+/**
+ * @Synopsis this function is used to initailly set up the ledmatrix
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+void setup_led()
+{
+  MAX7219Send(0x09, 0x00);
+  MAX7219Send(0x0a, 0x10);
+  MAX7219Send(0x0b, 0x07);
+  MAX7219Send(0x0c, 0x01);
+  MAX7219Send(0x0f, 0x00);
+}
+
+/* -------------------------------*/
+/**
+ * @Synopsis this function is used to print number on the led matrix 
+ *
+ * @Param OUTPUT is 
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+void printnumber(int i)
+{
+  int j;
+  for(j = 1; j<9 ;j++)
+  {
+    MAX7219Send(j, disp1[i][j-1]);
+  }
+  usleep(50);
+}
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : main.c
+* Creation Date : 18-03-2019
+* Last Modified : Sun 31 Mar 2019 00:9:56 PM MDT
+* Created By : Harsimransingh
+* Description: Source file to create all needed pthreads and implement the heartbeat functionality
+*
+* References
+*           -https://www.geeksforgeeks.org/mutex-lock-for-linux-thread-synchronization/
+*
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+
+/*User defined libraries*/
+#include "logger.h"
+#include "decision.h"
+#include "uart.h"
+
+void intHandler(int dummy) 
+{
+  printf("\nSIGNAL HANDLER CAUGHT\n");
+  exit_flag = 1;
+}
+
+void main(int argc, char *argv[])
+{
+  signal(SIGINT, intHandler);
+//  if(argc < 2)
+//  {
+//    printf("\nPlease input the log file name\n");
+//    exit(0);
+//  }
+  pthread_t decision_task,logging_task;
+  
+  /*Mutex lock for synchronized access of logger function*/
+  if(pthread_mutex_init(&logger_mutex,NULL)!= 0)
+  {
+    printf("\nlogger mutex creation failed\n");
+  }
+ /*Mutex lock for heartbeat pthread_cond_timedwait call*/
+  if(pthread_mutex_init(&heartbeat_mutex,NULL)!=0)
+  {
+    printf("\nheartbeat mutex intialization failed\n");
+    return;
+  }
+  /*Mutex lock for decision log queue check for return*/
+  if(pthread_mutex_init(&decision_mutex,NULL)!=0)
+  {
+      printf("\ndecision mutex intialization failed \n");
+      return;
+  }
+  if(pthread_cond_init(&logger_thread_cond,NULL)!=0)
+  {
+    printf("\ntemp Condition variable creation failed\n");
+    return;
+  }
+  if(pthread_cond_init(&decision_mutex_cond,NULL)!=0)
+  {
+    printf("\ndecision Condition variable creation failed\n");
+    return;
+  }
+  thread_struct *thread_input = (thread_struct *)malloc(sizeof(struct thread_content));
+  thread_input->log_file = "harry.log";
+   /*create logging task thread*/
+    if(!pthread_create (&logging_task, NULL, logging_thread, (void*)thread_input))
+    {
+      logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\nlogging thread created successfully\nLOG level:INFO",NULL);
+    }
+    else
+    {
+      printf("logging Thread creation failed\n");
+      logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"logging Thread creation failed",NULL);
+    }
+/*create decision task thread*/
+    if(!pthread_create (&decision_task, NULL, decision, (void*)thread_input))
+    {
+      logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"Thread info: MAIN\ndecision thread created successfully\nLOG level:INFO",NULL);
+    }
+    else
+    {
+      printf("decision Thread creation failed\n");
+      logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"decision Thread creation failed",NULL);
+    }
+
+    int return_value = 0;
+    while(exit_flag != 1)
+    {
+
+      /*Toggle led to indicate prgram is still running*/
+      //static int light_led_status;
+      //led_control(BLUE,light_led_status);
+      //light_led_status ^=1;
+
+      /*heartbeat timer setup*/
+      //struct timespec ts;
+      //ts = timer_setup(4,4000000);
+
+      /*to check if temperature thread is alive*/
+      //pthread_mutex_lock(&heartbeat_mutex);
+      //return_value = pthread_cond_timedwait(&decision_mutex_cond,&heartbeat_mutex,&ts);
+      //pthread_mutex_unlock(&heartbeat_mutex);
+      //if(return_value != 0 && exit_flag != 1)
+      //{
+      //  intHandler(3);
+      //  msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
+      //  logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"decision thread stuck",msg);
+      //  break;
+      //}
+
+      /*to check is light thread is alive or not*/
+      //pthread_mutex_lock(&heartbeat_mutex);
+      //return_value = pthread_cond_timedwait(&logger_thread_cond,&heartbeat_mutex,&ts);
+      //pthread_mutex_unlock(&heartbeat_mutex);
+      //if(return_value != 0 && exit_flag != 1)
+      //{
+      //  intHandler(3);
+      //  msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
+      //  logging_function(getppid(),getpid(),syscall(SYS_gettid),thread_input->log_file,"logger thread stuck",msg);
+      //  break;
+      //}
+    }
+    printf("\nREACHED HERE\n");
+    /*join all the thread in completion*/
+    pthread_join(logging_task,NULL);
+//    pthread_join(decision_task,NULL);
+
+  printf("\nDestroy all\n");
+  if(pthread_mutex_destroy(&heartbeat_mutex)!=0)
+  {
+    printf("\nheartbeat_mutex destroy: FAILED\n");
+  }
+  if(pthread_mutex_destroy(&logger_mutex) != 0)
+  {
+    printf("\nlogger_mutex destroy: FAILED\n");
+  }
+  if(pthread_cond_destroy(&decision_mutex_cond) != 0)
+  {
+    printf("\ndecision_thread_cond destroy: FAILED\n");
+  } 
+}
+
+/*
+ * Refernce:
+ * FreeRTOS 8.2 Tiva Demo
+ *
+ * main.c
+ *
+ * Harsimransingh Bindra & Yasir Aslam Shah
+ *
+ * This is a simple demonstration project of FreeRTOS 8.2 on the Tiva Launchpad
+ * EK-TM4C1294XL.  TivaWare driverlib sourcecode is included.
+ * Other references
+ *      -https://github.com/LuisAfonso95/TM4C123-Launchpad-Examples/blob/master/srf04/main.c
+ *      -Tiva adc.c code
+ *      -https://github.com/harsimran2421/AESD-5013-002-/tree/master/Assignment-5
+ */
+
+/*user defined libraries*/
+#include <include/FreeRTOSConfig.h>
+#include <include/harry_i2c.h>
+#include <include/main.h>
+#include <include/threads.h>
+#include <include/prj2_gpio.h>
+#include <include/prj2_uart.h>
+#include <include/prj2_alcohol.h>
+
+/*standard libraries*/
+#include <stdint.h>
+#include <stdbool.h>
+#include "drivers/pinout.h"
+#include "utils/uartstdio.h"
+
+
+// TivaWare includes
+#include "driverlib/sysctl.h"
+#include "driverlib/debug.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
+#include "driverlib/timer.h"
+#include "inc/hw_memmap.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/gpio.h"
+#include "driverlib/uart.h"
+#include "inc/hw_ints.h"
+#include "driverlib/interrupt.h"
+
+
+
+
+// FreeRTOS includes
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
+#include "timers.h"
+#include <include/temperature.h>
+
+// Main function
+int main(void)
+{
+    /*initializing the semaphores*/
+    led_signal = xSemaphoreCreateBinary();
+    temp_signal = xSemaphoreCreateBinary();
+    alcohol_signal = xSemaphoreCreateBinary();
+    log_m = xSemaphoreCreateMutex();
+    uint32_t output_clock_rate_hz;
+    /*initializing the system clock*/
+    output_clock_rate_hz = ROM_SysCtlClockFreqSet(
+                               (SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN |
+                                SYSCTL_USE_PLL | SYSCTL_CFG_VCO_480),
+                               SYSTEM_CLOCK);
+    ASSERT(output_clock_rate_hz == SYSTEM_CLOCK);
+
+    PinoutSet(false, false);
+    /*intialize the message queue*/
+    queue_create();
+    /*intialize the UART ports*/
+    configure_UART();
+    /*Intialize GPIO pins used*/
+     GPIO_Init();
+
+    SysCtlDelay(120000);
+    /*start up test */
+    startup_test();
+
+    /*initialize timer for periodic data sensing*/
+    TIMER_Init();
+    //I2C_Init();
+    /*LED task creation*/
+    xTaskCreate(LEDTask, (const portCHAR *)"LED",  configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+
+    /*Logger task creation*/
+    xTaskCreate(LoggerTask, (const portCHAR *)"Serial",  configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+
+    /*alcohol task creation*/
+    xTaskCreate(alcohol_sensor, (const portCHAR *)"alcohol_task",  configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+
+    /*ultrasonic task creation*/
+    xTaskCreate(ultrasonic_sensor, (const portCHAR *)"Temperature",  configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+
+    //xTaskCreate(TemperatureTask, (const portCHAR *)"Temperaturee",  configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+
+    vTaskStartScheduler();
+    return 0;
+}
+
+void TIMER_Init()
+{
+       /*Run come every 100 ms*/
+       TimerHandle_t myTimer = NULL;
+       myTimer = xTimerCreate(
+               "Timer1",
+               pdMS_TO_TICKS(100),
+               pdTRUE,
+               (void *) pvTimerGetTimerID(myTimer),
+               timerTask
+             );
+      xTimerStart(myTimer, 0);
+}
+
+
+/*  ASSERT() Error function
+ *
+ *  failed ASSERTS() from driverlib/debug.h are executed in this function
+ */
+void __error__(char *pcFilename, uint32_t ui32Line)
+{
+    /* Place a breakpoint here to capture errors until logging routine is finished*/
+    while (1)
+    {
+    }
+}
+
+
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : matrix.h
+* Creation Date :28-04-2019
+* Last Modified : Sun 28 April 2019 20:10:11 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: matrix file for interfacing LED Matrix function declaration and structure declarations
+* 
+* Functions:
+*           static void Send16bits () this function is used to write all the individual pixels 
+*           static void MAX7219() Send is send function to write anything to the LED Matrix 
+* 	    void setup_led() this function is used to initailly set up the ledmatrix
+*           void printnumber() thisfunction is used to print number on the led matrix 
+* References: https://github.com/harsimran2421/Rtes_Final_Project/tree/master/led_mat
+_._._._._._._._._._._._._._._._._._._._._.*/
+#ifndef MATRIX_H
+#define MATRIX_H
+
+/*standard libraries*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <pthread.h>
+#include <sys/time.h> 
+#include <semaphore.h>
+
+/*user libraries*/
+#include "user_led.h"
+
+/*macros*/
+#define DECODE_MODE   0x09                       
+#define INTENSITY     0x0a                        
+#define SCAN_LIMIT    0x0b                        
+#define SHUTDOWN      0x0c                        
+#define DISPLAY_TEST  0x0f                         
+
+/* -------------------------------*/
+/**
+ * @Synopsis this function is used to write all the individual pixels 
+ *
+ * @Param OUTPUT is a variable to carry out the output value from the function
+ * 
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+static void Send16bits (unsigned short output);
+
+/* -------------------------------*/
+/**
+ * @Synopsis this function is send function to write anything to the LED Matrix  
+ *
+ * @Param reg_number is the configuration input
+ * @Param dataout is value of the individual pixel to be written
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+static void MAX7219Send (unsigned char reg_number, unsigned char dataout);
+
+/* -------------------------------*/
+/**
+ * @Synopsis this function is used to initailly set up the ledmatrix
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+void setup_led();
+
+/* -------------------------------*/
+/**
+ * @Synopsis this function is used to print number on the led matrix 
+ *
+ * @Param OUTPUT is 
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+void printnumber(int i);
+
+#endif
+/*
+ * main.h
+ *
+ *  Created on: Mar 28, 2015
+ *      Author: akobyljanec
+ */
+
+#ifndef INCLUDE_MAIN_H_
+#define INCLUDE_MAIN_H_
+
+/* System clock rate, 120 MHz*/
+#define SYSTEM_CLOCK    120000000U
+void TIMER_Init();
+
+#endif /* INCLUDE_MAIN_H_ */
+/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+* File Name : logger.c
+* Creation Date : 19-03-2019
+* Last Modified : Sun 31 March 2019 00:10:11 PM MDT
+* Created By : Harsimransingh and Yasir Shah
+* Description: header file for logger function declaration and structure declarations
+* 
+* Functions:
+*           logging_thread() linked to logger pthread task
+*           logging_function() to log messages in a common log file
+*           timer_setup() to set timer attributes for heartbeat
+* References:
+_._._._._._._._._._._._._._._._._._._._._.*/
+
+/*standard headers*/
+#include "logger.h"
+
+mqd_t decision_discriptor; 
+
+/*strcuture to timestamp values*/
+struct timespec timer_setup(uint32_t second_value, uint32_t nanosec_value)
+{
+  struct timespec ts;
+  struct timeval tp;
+
+  gettimeofday(&tp,NULL);
+  ts.tv_sec = tp.tv_sec;
+  ts.tv_nsec = tp.tv_usec * 1000;
+  ts.tv_sec += second_value;
+  ts.tv_nsec += nanosec_value;
+  
+  return ts;
+}
+
+/* -------------------------------*/
+/**
+ * @Synopsis linked to logger pthread task used for synchronized logging
+ *
+ * @Param arg to pass arguement to pthread 
+ *
+ * @Returns void pointer is returned
+ */
+/* ---------------------------------*/
+void *logging_thread(void *arg)
+{
+  thread_struct *logging_thread = (thread_struct *)arg;
+  /*light queue attribute settings*/
+  mqd_t light_discriptor;
+  struct mq_attr attribute;
+  attribute.mq_maxmsg = 10;
+  attribute.mq_msgsize = sizeof(msg_struct);
+  decision_discriptor = mq_open ("/decision_queue", O_RDWR | O_CREAT, 0666, &attribute);
+  if (light_discriptor < 0)
+  {
+    printf("message queue error\n");
+  }
+  else
+  {
+    printf("Successful in creating message queue\n");
+  }
+
+  while(exit_flag!=1)
+  {
+    pthread_cond_broadcast(&logger_thread_cond);
+    if(decision_flag != 0)
+    {
+      decision_flag = 0;
+      msg_struct *msg = (msg_struct *)malloc(sizeof(msg_struct));
+      if(mq_receive(decision_discriptor,(char *)msg,sizeof(msg_struct),0) < 0)
+      {
+        printf("Error receiving msg to  temperature queue\n");
+      }
+      logging_function(getppid(),getpid(),syscall(SYS_gettid),logging_thread->log_file,"sensor_value recieved",msg);
+    }
+  }
+  pthread_exit(NULL);
+}
+
+void logging_function(int parent_id, int pthread_id, int thread_id, char *file_name,char* ip_str,msg_struct *msg)
+{
+  pthread_mutex_lock(&logger_mutex); 
+  FILE *file_ptr = fopen(file_name,"a");
+  time_t T= time(NULL);
+  struct  tm tm = *localtime(&T);
+  fprintf(file_ptr,"\nSystem Date is: %02d/%02d/%04d\n",tm.tm_mday, tm.tm_mon+1, tm.tm_year+1900);
+  fprintf(file_ptr,"System Time is: %02d:%02d:%02d\n",tm.tm_hour, tm.tm_min, tm.tm_sec);
+  if(msg != NULL)
+  {
+    if(msg->thread_id == 3)
+    {
+      	fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Ultrasonic","DATA",msg->sensor_value);
+    }
+    else if(msg->thread_id == 9)
+    {
+    	fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Ultrasonic THRESHOLD CROSSED","DATA",msg->sensor_value);
+    }
+    else if(msg->thread_id == 8)
+    {
+    	  fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Alcohol","DATA",msg->sensor_value);
+    }
+    else if(msg->thread_id == 2)
+    {
+      	 fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Alcohol THRESHOLD","DATA",msg->sensor_value);
+    }
+    else if(msg->thread_id == 10)
+    {
+      	 fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","temperature","DATA",msg->sensor_value);
+    }
+    else if(msg->thread_id == 11)
+    {
+      	 fprintf(file_ptr,"Thread:%s\nLog level:%s\nsensor_value:%.2f\n","Temperature THRESHOLD","DATA",msg->sensor_value);
+    }
+  }
+  fprintf(file_ptr,"%s\n",ip_str);
+  fflush(file_ptr);
+  fclose(file_ptr);
+  pthread_mutex_unlock(&logger_mutex); 
+}
+
+
